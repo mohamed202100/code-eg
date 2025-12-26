@@ -1,0 +1,33 @@
+ .social-icon {
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s, transform 0.3s;
+    }
+
+    .social-icon i {
+        margin-right: 5px;
+        font-size: 1.1rem;
+    }
+
+    /* Email color: blue */
+    .social-icon.email {
+        color: #007bff;
+    }
+
+    .social-icon.email:hover {
+        color: #0056b3;
+        transform: scale(1.1);
+    }
+
+    /* Instagram gradient color */
+    .social-icon.instagram {
+        color: #E1306C;
+        /* أساس اللون الوردي */
+    }
+
+    .social-icon.instagram:hover {
+        color: #C13584;
+        /* يتغير عند Hover */
+        transform: scale(1.1);
+    }
+

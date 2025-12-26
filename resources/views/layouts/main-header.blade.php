@@ -3,9 +3,14 @@
         <nav class="admin-header navbar navbar-default col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
             <!-- logo -->
             <div class="text-left navbar-brand-wrapper">
-                <a class="navbar-brand brand-logo" href="index.html"><img src="assets/images/logo-dark.png"
-                        alt=""></a>
-                <a class="navbar-brand brand-logo-mini" href="index.html"><img src="assets/images/logo-icon-dark.png"
+                <a class="navbar-brand brand-logo d-flex align-items-center" href="#">
+                    <img src="assets/images/logo.jpg" alt="" style="height:40px; width:40px;">
+                    <!-- نص بجانب اللوجو -->
+                    <span class="ms-2 fw-bold text-primary"
+                        style="font-family: 'Courier New', monospace; font-size:1.2rem;">
+                        Code
+                    </span>
+                </a> <a class="navbar-brand brand-logo-mini" href="#"><img src="assets/images/logo.jpg"
                         alt=""></a>
             </div>
             <!-- Top bar left -->
@@ -67,20 +72,42 @@
                         <div class="dropdown-header">
                             <div class="media">
                                 <div class="media-body">
-                                    <h5 class="mt-0 mb-0">Michael Bean</h5>
-                                    <span>michael-bean@mail.com</span>
+                                    <h5 class="mt-0 mb-0">
+                                        @if (Auth::check())
+                                            <p>{{ Auth::user()->name }}</p>
+
+                                            <span class="text-muted small">{{ Auth::user()->email }}</span>
+                                        @else
+                                            <p>guest!</p>
+                                        @endif
+                                    </h5>
+
                                 </div>
                             </div>
                         </div>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="#"><i class="text-secondary ti-reload"></i>Activity</a>
                         <a class="dropdown-item" href="#"><i class="text-success ti-email"></i>Messages</a>
-                        <a class="dropdown-item" href="#"><i class="text-warning ti-user"></i>Profile</a>
-                        <a class="dropdown-item" href="#"><i class="text-dark ti-layers-alt"></i>Projects <span
+                        <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
+                                class="text-warning ti-user"></i>Profile</a>
+                        <a class="dropdown-item" href="#"><i class="text-dark ti-layers-alt"></i>Orders <span
                                 class="badge badge-info">6</span> </a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#"><i class="text-info ti-settings"></i>Settings</a>
-                        <a class="dropdown-item" href="#"><i class="text-danger ti-unlock"></i>Logout</a>
+                        @if (Auth::check())
+                            <a class="dropdown-item text-danger" href="#"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <i class="ti-unlock"></i> Logout
+                            </a>
+
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+                        @else
+                            <a class="dropdown-item text-success" href="{{ route('login') }}">
+                                <i class="ti-user"></i> Login
+                            </a>
+                        @endif
+
                     </div>
                 </li>
             </ul>

@@ -1,8 +1,9 @@
 <!-- Title -->
-<title>@yield("title")</title>
+<title>@yield('title')</title>
 
 <!-- Favicon -->
 <link rel="shortcut icon" href="{{ URL::asset('assets/images/favicon.ico') }}" type="image/x-icon" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <!-- Font -->
 <link rel="stylesheet"
