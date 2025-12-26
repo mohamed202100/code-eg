@@ -19,7 +19,7 @@
                     <li class="mt-10 mb-10 text-muted pl-4 font-medium menu-title">Components </li>
                     <!-- menu item Elements-->
                     <li>
-                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#elements">
+                        <a href="{{ route('categories.index') }}" data-toggle="collapse" data-target="#elements">
                             <div class="pull-left"><i class="ti-palette"></i><span
                                     class="right-nav-text">Category</span></div>
                             <div class="pull-right"><i class="ti-plus"></i></div>
@@ -30,6 +30,8 @@
                             $firstThree = Category::orderBy('id', 'asc')->take(2)->get();
                         @endphp
                         <ul id="elements" class="collapse" data-parent="#sidebarnav">
+                            <li><a href="{{ route('categories.index') }}">All Products</a>
+                            </li>
                             <li><a
                                     href="{{ route('categories.show', $firstThree[0]->id) }}">{{ $firstThree[0]->title }}</a>
                             </li>
@@ -48,10 +50,8 @@
                             <div class="clearfix"></div>
                         </a>
                         <ul id="calendar-menu" class="collapse" data-parent="#sidebarnav">
-                            <li> <a href="calendar.html">Events Calendar </a> </li>
-                            <li> <a href="calendar-list.html">List Calendar</a> </li>
-                            <li> <a href="form-wizard.html">form wizard</a> </li>
-                            <li> <a href="form-repeater.html">form repeater</a> </li>
+                            <li> <a href="{{ route('products.index') }}">All Products </a> </li>
+                            <li> <a href="{{ route('products.create') }}">Create Product</a> </li>
                             <li> <a href="input-group.html">input group</a> </li>
                         </ul>
                     </li>
