@@ -61,23 +61,39 @@
                         <h4>Price: ${{ $product->price }}</h4>
 
                         <!-- فورم لإضافة للـ Cart -->
-                        <form action="#" method="POST">
+                        <form action="{{ route('carts.store', $product) }}" method="POST">
                             @csrf
-
                             <!-- اختيار الـ Size -->
-                            <div class="mb-3">
-                                <label for="size" class="form-label">Size</label>
-                                <select name="size" id="size" class="form-select" required>
-                                    <option value="">Select Size</option>
-                                    <option value="S">Small</option>
-                                    <option value="M">Medium</option>
-                                    <option value="L">Large</option>
-                                    <option value="XL">XL</option>
-                                </select>
-                                @error('size')
-                                    <div class="text-danger">{{ $message }}</div>
-                                @enderror
-                            </div>
+                            @if ($product->category->title === 'shirts')
+                                <div class="mb-3">
+                                    <label for="size" class="form-label">Size</label>
+                                    <select name="size" id="size" class="form-select" required>
+                                        <option value="">Select Size</option>
+                                        <option value="S">Small</option>
+                                        <option value="M">Medium</option>
+                                        <option value="L">Large</option>
+                                        <option value="XL">XL</option>
+                                    </select>
+                                    @error('size')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @else
+                                <div class="mb-3">
+                                    <label for="size" class="form-label">Size</label>
+                                    <select name="size" id="size" class="form-select" required>
+                                        <option value="">Select Size</option>
+                                        <option value="30">30</option>
+                                        <option value="32">32</option>
+                                        <option value="34">34</option>
+                                        <option value="36">36</option>
+                                    </select>
+                                    @error('size')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            @endif
+
 
                             <!-- اختيار الـ Color -->
                             <div class="mb-3">
@@ -97,12 +113,11 @@
                             <div class="mb-3">
                                 <label for="quantity" class="form-label">Quantity</label>
                                 <input type="number" name="quantity" id="quantity" class="form-control" value="1"
-                                    min="1" required>
+                                    min="1" max="{{ $product->stock }}" required>
                                 @error('quantity')
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-
                             <button type="submit" class="btn btn-success">Add to Cart</button>
                         </form>
                     </div>
@@ -117,7 +132,6 @@
             <!--=================================
  footer -->
 
-            @include('layouts.footer')
         </div><!-- main content wrapper end-->
     </div>
     </div>

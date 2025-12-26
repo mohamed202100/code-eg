@@ -14,7 +14,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::paginate(5);
+        $products = Product::where('status', '1')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
         return view('product.index', compact('products'));
     }
 

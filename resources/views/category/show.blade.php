@@ -55,8 +55,10 @@
                     @foreach ($products as $product)
                         <div class="col-md-4 mb-3">
                             <div class="card">
-                                <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
-                                    alt="{{ $product->title }}">
+                                <a href="{{ route('products.show', $product->id) }}">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
+                                        alt="{{ $product->title }}">
+                                </a>
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->title }}</h5>
                                     <p class="card-text">${{ $product->price }}</p>
@@ -83,7 +85,6 @@
             <!--=================================
  footer -->
 
-            @include('layouts.footer')
         </div><!-- main content wrapper end-->
     </div>
     </div>

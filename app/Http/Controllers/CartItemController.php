@@ -2,64 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CartItemRequest;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 
 class CartItemController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function increment(CartItem $cartItem)
     {
-        //
+        $product = $cartItem->product;
+
+        if ($product->stock < 1) {
+            return back()->with('error', 'No more stock available.');
+        }
+
+        $cartItem->increment('quantity');
+        $product->decrement('stock');
+
+        return back()->with('success', 'Quantity increased!');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function decrement(CartItem $cartItem)
     {
-        //
+        if ($cartItem->quantity <= 1) {
+            return back()->with('error', 'Quantity cannot be less than 1.');
+        }
+
+        $cartItem->decrement('quantity');
+        $cartItem->product->increment('stock');
+        return back()->with('success', 'Quantity decreased!');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(CartItem $cartItem)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CartItem $cartItem)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CartItem $cartItem)
-    {
-        //
-    }
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(CartItem $cartItem)
     {
-        //
+        $cartItem->product->increment('stock', $cartItem->quantity);
+
+        $cartItem->delete();
+
+        return back()->with('success', 'Item removed from cart');
     }
 }

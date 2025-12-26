@@ -73,8 +73,7 @@
                     <!-- menu font icon-->
                     <li>
                         <a href="javascript:void(0);" data-toggle="collapse" data-target="#font-icon">
-                            <div class="pull-left"><i class="ti-home"></i><span class="right-nav-text">font
-                                    icon</span></div>
+                            <div class="pull-left"><i class="ti-home"></i><span class="right-nav-text">Cart</span></div>
                             <div class="pull-right"><i class="ti-plus"></i></div>
                             <div class="clearfix"></div>
                         </a>
@@ -107,13 +106,15 @@
                     </li>
                     <!-- menu item table -->
                     <li>
-                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#table">
-                            <div class="pull-left"><i class="ti-layout-tab-window"></i><span
-                                    class="right-nav-text">Cart</span></div>
-                            <div class="pull-right"><i class="ti-plus"></i></div>
+                        <a href="{{ route('carts.index') }}">
+                            <div class="pull-left">
+                                <i class="ti-layout-tab-window"></i>
+                                <span class="right-nav-text">Cart</span>
+                            </div>
                             <div class="clearfix"></div>
                         </a>
                     </li>
+
 
 
                 </ul>
