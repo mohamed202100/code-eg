@@ -78,11 +78,14 @@
                                 </div>
                                 <div class="float-right text-right">
                                     <p class="card-text text-dark">Orders</p>
-                                    <h4>656</h4>
+                                    <h4>{{ \App\Models\Order::count() }}</h4>
                                 </div>
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
                                 <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total sales
+                                <span class="text-muted mb-0 float-right text-right">
+                                    ${{ \App\Models\Order::sum('total_price') }}
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -102,7 +105,7 @@
                                 </div>
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
-                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Week
+                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Year
                             </p>
                         </div>
                     </div>

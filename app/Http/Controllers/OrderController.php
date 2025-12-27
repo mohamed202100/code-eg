@@ -87,6 +87,11 @@ class OrderController extends Controller
             $item->product->decrement('stock', $item->quantity);
         }
 
+        if ($item->product->stock == 0) {
+            $item->product->status = '0';
+            $item->product->save();
+        }
+
 
         $cart->cartItems()->delete();
 

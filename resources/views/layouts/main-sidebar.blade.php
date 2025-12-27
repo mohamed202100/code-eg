@@ -9,7 +9,7 @@
                         <a href="/">
                             <div class="pull-left">
                                 <i class="ti-home"></i>
-                                <span class="right-nav-text">Dashboard</span>
+                                <span class="right-nav-text">Home</span>
                             </div>
                             <div class="clearfix"></div>
                         </a>
@@ -51,7 +51,9 @@
                         </a>
                         <ul id="calendar-menu" class="collapse" data-parent="#sidebarnav">
                             <li> <a href="{{ route('products.index') }}">All Products </a> </li>
-                            <li> <a href="{{ route('products.create') }}">Create Product</a> </li>
+                            @can('create products')
+                                <li> <a href="{{ route('products.create') }}">Create Product</a> </li>
+                            @endcan
                             <li> <a href="input-group.html">input group</a> </li>
                         </ul>
                     </li>

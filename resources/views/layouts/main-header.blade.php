@@ -4,15 +4,15 @@
             <!-- logo -->
             <div class="text-left navbar-brand-wrapper">
                 <a class="navbar-brand brand-logo d-flex align-items-center" href="#">
-                    <img src="assets/images/logo.jpg" alt="" style="height:40px; width:40px;">
-                    <!-- نص بجانب اللوجو -->
-                    <span class="ms-2 fw-bold text-primary"
-                        style="font-family: 'Courier New', monospace; font-size:1.2rem;">
-                        Code
-                    </span>
-                </a> <a class="navbar-brand brand-logo-mini" href="#"><img src="assets/images/logo.jpg"
-                        alt=""></a>
+                    <img src="{{ asset('assets/images/code.jpg') }}" alt="Logo" class="me-2"
+                        style="height:50px; width:50px; object-fit:cover; border-radius:8px;">
+                </a>
+                <a class="navbar-brand brand-logo-mini" href="#">
+                    <img src="{{ asset('assets/images/code.jpg') }}" alt="Logo Mini"
+                        style="height:40px; width:40px; object-fit:cover; border-radius:6px;">
+                </a>
             </div>
+
             <!-- Top bar left -->
             <ul class="nav navbar-nav mr-auto">
                 <li class="nav-item">
@@ -66,7 +66,7 @@
                 <li class="nav-item dropdown mr-30">
                     <a class="nav-link nav-pill user-avatar" data-toggle="dropdown" href="#" role="button"
                         aria-haspopup="true" aria-expanded="false">
-                        <img src="assets/images/profile-avatar.jpg" alt="avatar">
+                        <img src="assets/images/profile-avatar.png" alt="avatar">
                     </a>
                     <div class="dropdown-menu dropdown-menu-right">
                         <div class="dropdown-header">
@@ -75,7 +75,6 @@
                                     <h5 class="mt-0 mb-0">
                                         @if (Auth::check())
                                             <p>{{ Auth::user()->name }}</p>
-
                                             <span class="text-muted small">{{ Auth::user()->email }}</span>
                                         @else
                                             <p>guest!</p>
@@ -89,13 +88,14 @@
                         <a class="dropdown-item" href="#"><i class="text-success ti-email"></i>Messages</a>
                         <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
                                 class="text-warning ti-user"></i>Profile</a>
+
                         <a class="dropdown-item" href="{{ route('orders.index') }}">
                             <i class="text-dark ti-layers-alt"></i>
                             Orders
-                            <span
-                                class="badge badge-info">{{ Auth::check() ? Auth::user()->orders()->count() : 0 }}</span>
+                            <span class="badge badge-info">
+                                {{ Auth::check() ? Auth::user()->orders()->count() : 0 }}
+                            </span>
                         </a>
-
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#"><i class="text-info ti-settings"></i>Settings</a>
                         @if (Auth::check())
