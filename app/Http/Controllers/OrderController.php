@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -61,14 +62,8 @@ class OrderController extends Controller
      * Store a newly created resource in storage.
      */
 
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
-        $request->validate([
-            'name'    => 'required|string|max:255',
-            'phone'   => 'required|string|max:20|min:11',
-            'address' => 'required|string|max:500|min:10',
-        ]);
-
         $cart = Auth::check() ? Auth::user()->cart()->with('cartItems.product')->first() : null;
 
         if (!$cart || $cart->cartItems->count() === 0) {
