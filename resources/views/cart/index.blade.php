@@ -107,12 +107,10 @@
                         </div>
 
                     </div>
-                    <div class="text-end mt-3 text-center">
-                        <a href="#" class="btn btn-success">
-                            Confirm Order
-                        </a>
-                    </div>
                 @endforeach
+                <div class="text-center my-4">
+                    <a href="{{ route('orders.create') }}" class="btn btn-primary btn-lg">Order Now</a>
+                </div>
             @else
                 <p class="text-center">Your cart is empty!</p>
                 <div class="text-center mt-3">

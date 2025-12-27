@@ -63,8 +63,6 @@ class CartController extends Controller
             ]);
         }
 
-        $product->decrement('stock', $request->quantity);
-
         return redirect()->back()->with('success', 'Product added to cart successfully!');
     }
 }

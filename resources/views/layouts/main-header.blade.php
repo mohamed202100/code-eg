@@ -89,8 +89,13 @@
                         <a class="dropdown-item" href="#"><i class="text-success ti-email"></i>Messages</a>
                         <a class="dropdown-item" href="{{ route('profile.edit') }}"><i
                                 class="text-warning ti-user"></i>Profile</a>
-                        <a class="dropdown-item" href="#"><i class="text-dark ti-layers-alt"></i>Orders <span
-                                class="badge badge-info">6</span> </a>
+                        <a class="dropdown-item" href="{{ route('orders.index') }}">
+                            <i class="text-dark ti-layers-alt"></i>
+                            Orders
+                            <span
+                                class="badge badge-info">{{ Auth::check() ? Auth::user()->orders()->count() : 0 }}</span>
+                        </a>
+
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#"><i class="text-info ti-settings"></i>Settings</a>
                         @if (Auth::check())

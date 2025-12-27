@@ -62,7 +62,13 @@
                                 <div class="card-body">
                                     <h5 class="card-title">{{ $product->title }}</h5>
                                     <p class="card-text">${{ $product->price }}</p>
-                                    <a href="#" class="btn btn-primary">View</a>
+                                    @can('view products')
+                                        <a href="{{ route('products.show', $product->id) }}"
+                                            class="btn btn-success d-inline-flex align-items-center gap-2">
+                                            <i class="bi bi-cart-plus"></i>
+                                            Add To Cart
+                                        </a>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

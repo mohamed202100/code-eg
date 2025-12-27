@@ -58,16 +58,28 @@
                                     <h5 class="card-title">{{ $product->title }}</h5>
                                     <p class="card-text">${{ $product->price }}</p>
                                     <p class="card-text"><small>Stock: {{ $product->stock }}</small></p>
-                                    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info">Edit</a>
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                        class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger"
-                                            onclick="return confirm('Are you sure you want to delete this product?')">
-                                            Delete
-                                        </button>
-                                    </form>
+                                    @can('edit products')
+                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info">Edit</a>
+                                    @endcan
+
+                                    @can('delete products')
+                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this product?')">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @endcan
+                                    @can('view products')
+                                        <a href="{{ route('products.show', $product->id) }}"
+                                            class="btn btn-success d-inline-flex align-items-center gap-2">
+                                            <i class="bi bi-cart-plus"></i>
+                                            Add To Cart
+                                        </a>
+                                    @endcan
                                 </div>
                             </div>
                         </div>

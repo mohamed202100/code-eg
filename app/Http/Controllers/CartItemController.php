@@ -17,7 +17,6 @@ class CartItemController extends Controller
         }
 
         $cartItem->increment('quantity');
-        $product->decrement('stock');
 
         return back()->with('success', 'Quantity increased!');
     }
@@ -29,7 +28,6 @@ class CartItemController extends Controller
         }
 
         $cartItem->decrement('quantity');
-        $cartItem->product->increment('stock');
         return back()->with('success', 'Quantity decreased!');
     }
 
@@ -39,8 +37,6 @@ class CartItemController extends Controller
      */
     public function destroy(CartItem $cartItem)
     {
-        $cartItem->product->increment('stock', $cartItem->quantity);
-
         $cartItem->delete();
 
         return back()->with('success', 'Item removed from cart');

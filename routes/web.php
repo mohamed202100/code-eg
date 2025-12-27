@@ -33,7 +33,28 @@ Route::middleware('permission:delete categories')->group(function () {
 });
 
 
-Route::resource('products', ProductController::class);
+Route::get('/products', [ProductController::class, 'index'])
+    ->name('products.index');
+
+Route::get('/products/{product}', [ProductController::class, 'show'])
+    ->name('products.show');
+
+Route::middleware('permission:create products')->group(function () {
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+});
+
+Route::middleware('permission:edit products')->group(function () {
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+});
+
+
+Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+    ->middleware('permission:delete products')
+    ->name('products.destroy');
+
+
 
 Route::resource('carts', CartController::class)->except('store');
 
@@ -48,6 +69,9 @@ Route::patch('/cartItems/{cartItem}/decrement', [CartItemController::class, 'dec
 Route::post('/cart/store/{product}', [CartController::class, 'store'])
     ->name('carts.store');
 
+
+
+Route::resource('orders', OrderController::class);
 
 
 Route::get('/dashboard', function () {
