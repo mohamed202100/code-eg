@@ -48,40 +48,58 @@
 
 
 
+
+
+
             <table class="table">
                 @php
                     $i = 0;
                 @endphp
-                <a href="{{ route('categories.create') }}">
-                    <button type="button" class="btn btn-success">Add Category</button>
-                </a><br><br>
+                @can('create categories')
+                    <a href="{{ route('categories.create') }}">
+                        <button type="button" class="btn btn-success">Add Category</button>
+                    </a><br><br>
+                @endcan
                 <thead>
                     <tr>
                         <th scope="col">#</th>
                         <th scope="col">Title</th>
-                        <th colspan='2'>Actions</th>
+                        @can('edit categories')
+                            <th colspan='2'>Actions</th>
+                        @endcan
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($categories as $category)
                         <tr>
                             <th scope="row">{{ ++$i }}</th>
-                            <td>{{ $category->title }}</td>
                             <td>
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-info">
-                                    Edit
+                                <a href="{{ route('categories.show', $category->id) }}"
+                                    class="text-primary fw-medium text-decoration-none">
+                                    {{ $category->title }}
                                 </a>
                             </td>
-                            <td>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this category?')">
-                                        Delete
-                                    </button>
-                                </form>
-                            </td>
+
+                            @can('edit categories')
+                                <td>
+                                    <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-info">
+                                        Edit
+                                    </a>
+                                </td>
+                            @endcan
+
+                            @can('delete categories')
+                                <td>
+                                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this category?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                 </tbody>

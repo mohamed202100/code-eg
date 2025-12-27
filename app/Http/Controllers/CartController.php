@@ -18,7 +18,11 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cart = Auth::user()->cart()->with('cartItems.product')->first();
+        if (Auth::check()) {
+            $cart = Auth::user()->cart()->with('cartItems.product')->first();
+        } else {
+            return redirect()->back()->with('error', 'Please login first.');
+        }
         return view('cart.index', compact('cart'));
     }
 

@@ -30,7 +30,7 @@
                             $firstThree = Category::orderBy('id', 'asc')->take(2)->get();
                         @endphp
                         <ul id="elements" class="collapse" data-parent="#sidebarnav">
-                            <li><a href="{{ route('categories.index') }}">All Products</a>
+                            <li><a href="{{ route('categories.index') }}">All Categories</a>
                             </li>
                             <li><a
                                     href="{{ route('categories.show', $firstThree[0]->id) }}">{{ $firstThree[0]->title }}</a>
