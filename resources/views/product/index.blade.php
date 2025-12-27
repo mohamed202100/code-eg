@@ -73,6 +73,7 @@
                                             </button>
                                         </form>
                                     @endcan
+                                    <br><br>
                                     @can('view products')
                                         <a href="{{ route('products.show', $product->id) }}"
                                             class="btn btn-success d-inline-flex align-items-center gap-2">

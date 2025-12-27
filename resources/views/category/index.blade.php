@@ -49,8 +49,6 @@
 
 
 
-
-
             <table class="table">
                 @php
                     $i = 0;

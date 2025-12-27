@@ -65,9 +65,12 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+                                    $i = 0;
+                                @endphp
                                 @forelse ($orders as $order)
                                     <tr>
-                                        <td>{{ $order->id }}</td>
+                                        <td>{{ ++$i }}</td>
 
                                         <td>
                                             {{ $order->name ?? ($order->full_name ?? 'Guest') }}

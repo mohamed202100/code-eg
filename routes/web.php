@@ -14,25 +14,28 @@ Route::get('/', function () {
     return view('dashboard');
 });
 
-
-Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
-Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
-
-
-Route::middleware('permission:create categories')->group(function () {
+Route::middleware(['permission:create categories', 'admin'])->group(function () {
     Route::get('/categories/create', [CategoryController::class, 'create'])->name('categories.create');
     Route::post('/categories', [CategoryController::class, 'store'])->name('categories.store');
 });
 
-Route::middleware('permission:edit categories')->group(function () {
+
+Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
+
+Route::middleware(['permission:edit categories', 'admin'])->group(function () {
     Route::get('/categories/{category}/edit', [CategoryController::class, 'edit'])->name('categories.edit');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])->name('categories.update');
 });
 
-Route::middleware('permission:delete categories')->group(function () {
+Route::middleware(['permission:delete categories', 'admin'])->group(function () {
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
+Route::middleware(['admin', 'permission:create products'])->group(function () {
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+});
 
 Route::get('/products', [ProductController::class, 'index'])
     ->name('products.index');
@@ -40,21 +43,15 @@ Route::get('/products', [ProductController::class, 'index'])
 Route::get('/products/{product}', [ProductController::class, 'show'])
     ->name('products.show');
 
-Route::middleware('permission:create products')->group(function () {
-    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-});
-
-Route::middleware('permission:edit products')->group(function () {
+Route::middleware(['permission:edit products', 'admin'])->group(function () {
     Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
     Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 });
 
 
 Route::delete('/products/{product}', [ProductController::class, 'destroy'])
-    ->middleware('permission:delete products')
+    ->middleware(['permission:delete products', 'admin'])
     ->name('products.destroy');
-
 
 
 Route::resource('carts', CartController::class)->except('store');
@@ -75,7 +72,7 @@ Route::post('/cart/store/{product}', [CartController::class, 'store'])
 Route::resource('orders', OrderController::class);
 
 
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
     Route::resource('orders', AdminOrderController::class);
 });
 

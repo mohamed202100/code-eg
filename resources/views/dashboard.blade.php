@@ -82,14 +82,12 @@
                                             <p class="card-text text-dark">Orders</p>
                                             <h4>{{ \App\Models\Order::count() }}</h4>
                                         </a>
-                                    @endcan
-                                    @if (Auth::user()->role != 'admin')
+                                    @else
                                         <p class="card-text text-dark">Orders</p>
                                         <h4>{{ \App\Models\Order::count() }}</h4>
-                                    @endif
-
-
+                                    @endcan
                                 </div>
+
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
                                 <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total sales
