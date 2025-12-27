@@ -77,8 +77,18 @@
                                     </span>
                                 </div>
                                 <div class="float-right text-right">
-                                    <p class="card-text text-dark">Orders</p>
-                                    <h4>{{ \App\Models\Order::count() }}</h4>
+                                    @can('update orders')
+                                        <a href="{{ route('admin.orders.index') }}">
+                                            <p class="card-text text-dark">Orders</p>
+                                            <h4>{{ \App\Models\Order::count() }}</h4>
+                                        </a>
+                                    @endcan
+                                    @if (Auth::user()->role != 'admin')
+                                        <p class="card-text text-dark">Orders</p>
+                                        <h4>{{ \App\Models\Order::count() }}</h4>
+                                    @endif
+
+
                                 </div>
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">

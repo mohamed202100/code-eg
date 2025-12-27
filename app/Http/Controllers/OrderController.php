@@ -15,12 +15,21 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Auth::user()
-            ->orders()
-            ->latest()
-            ->paginate(10);
+        if (Auth::user()) {
+            $orders = Order::where('user_id', Auth::id())
+                ->orderByRaw("
+        CASE
+            WHEN status = 'pending' THEN 1
+            ELSE 2
+        END
+    ")
+                ->latest()
+                ->paginate(10);
 
-        return view('order.index', compact('orders'));
+            return view('order.index', compact('orders'));
+        } else {
+            return redirect()->route('login');
+        }
     }
 
 

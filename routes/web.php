@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
@@ -72,6 +73,12 @@ Route::post('/cart/store/{product}', [CartController::class, 'store'])
 
 
 Route::resource('orders', OrderController::class);
+
+
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::resource('orders', AdminOrderController::class);
+});
+
 
 
 Route::get('/dashboard', function () {
