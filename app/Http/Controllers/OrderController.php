@@ -101,7 +101,7 @@ class OrderController extends Controller
 
         $cart->cartItems()->delete();
 
-        $admins = User::where('is_admin', true)->get();
+        $admins = User::where('role', '=', 'admin')->get();
 
         foreach ($admins as $admin) {
             $admin->notify(new NewOrderNotification($order));

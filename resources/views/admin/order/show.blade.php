@@ -99,9 +99,9 @@
                                     <label class="form-label">Status</label>
                                     <select name="status" class="form-select" required>
                                         <option value="pending" @selected($order->status == 'pending')>Pending</option>
-                                        <option value="shipped" @selected($order->status == 'shipped')>Confirmed</option>
+                                        <option value="shipped" @selected($order->status == 'shipped')>Shipped</option>
                                         <option value="delivered" @selected($order->status == 'delivered')>Delivered</option>
-                                        <option value="refunded" @selected($order->status == 'refunded')>Cancelled</option>
+                                        <option value="refunded" @selected($order->status == 'refunded')>Refunded</option>
                                         <option value="cancelled" @selected($order->status == 'cancelled')>Cancelled</option>
                                     </select>
                                 </div>

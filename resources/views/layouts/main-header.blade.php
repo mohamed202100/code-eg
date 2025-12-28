@@ -59,12 +59,17 @@
                             <div class="dropdown-divider"></div>
 
                             @forelse(auth()->user()->unreadNotifications as $notification)
-                                <a href="{{ route('orders.show', $notification->data['order_id'] ?? '#') }}"
-                                    class="dropdown-item">
-                                    {{ $notification->data['message'] ?? 'New Notification' }}
-                                    <small class="float-right text-muted time">
-                                        {{ $notification->created_at->diffForHumans() }}
-                                    </small>
+                                @if (auth()->user()->role == 'admin')
+                                    <a href="{{ route('admin.orders.show', $notification->data['order_id'] ?? '#') }}"
+                                        class="dropdown-item">
+                                    @else
+                                        <a href="{{ route('orders.show', $notification->data['order_id'] ?? '#') }}"
+                                            class="dropdown-item">
+                                @endif
+                                {{ $notification->data['message'] ?? 'New Notification' }}
+                                <small class="float-right text-muted time">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </small>
                                 </a>
                             @empty
                                 <a href="#" class="dropdown-item text-center text-muted">

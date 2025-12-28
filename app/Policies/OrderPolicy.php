@@ -26,7 +26,7 @@ class OrderPolicy
      */
     public function view(User $user, Order $order)
     {
-        return $user->id === $order->user_id;
+        return $user->id === $order->user_id || $user->role === 'admin';
     }
 
 

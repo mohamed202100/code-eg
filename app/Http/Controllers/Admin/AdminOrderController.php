@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Notifications\OrderStatusChanged;
 use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
@@ -47,6 +48,9 @@ class AdminOrderController extends Controller
         $order->update([
             'status' => $request->status,
         ]);
+
+        $order->user->notify(new OrderStatusChanged($order));
+
 
         return back()->with('success', 'Order status updated successfully');
     }
