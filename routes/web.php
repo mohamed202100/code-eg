@@ -32,6 +32,14 @@ Route::middleware(['permission:delete categories', 'admin'])->group(function () 
     Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 });
 
+
+
+Route::get('/products/search', [ProductController::class, 'search'])
+    ->name('products.search');
+
+
+
+
 Route::middleware(['admin', 'permission:create products'])->group(function () {
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::post('/products', [ProductController::class, 'store'])->name('products.store');
