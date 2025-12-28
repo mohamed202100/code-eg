@@ -33,6 +33,13 @@
  Main content -->
         <!-- main-content -->
         <div class="content-wrapper">
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}<a class=" text-success" href="{{ route('login') }}">
+                        <i class="ti-user"></i> Login Now
+                    </a>
+                </div>
+            @endif
             <div class="page-title">
                 <div class="row">
                     <div class="col-sm-6">

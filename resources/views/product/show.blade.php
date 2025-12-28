@@ -42,7 +42,9 @@
 
             @if (session('error'))
                 <div class="alert alert-danger">
-                    {{ session('error') }}
+                    {{ session('error') }}<a class=" text-success" href="{{ route('login') }}">
+                        <i class="ti-user"></i> Login Now
+                    </a>
                 </div>
             @endif
 
@@ -118,7 +120,15 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button type="submit" class="btn btn-success">Add to Cart</button>
+                            @can('create orders')
+                                <button type="submit" class="btn btn-success">Add to Cart</button>
+                            @else
+                                <button type="submit" class="btn btn-success" disabled>Add to Cart</button>
+                                <a class=" text-success" href="{{ route('login') }}">
+                                    <i class="ti-user"></i> Login Now For Order
+                                </a>
+                            @endcan
+
                         </form>
                     </div>
                 </div>

@@ -77,7 +77,7 @@ Route::post('/cart/store/{product}', [CartController::class, 'store'])
 
 
 
-Route::resource('orders', OrderController::class);
+Route::resource('orders', OrderController::class)->middleware('auth');
 
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {

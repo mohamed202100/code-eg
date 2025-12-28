@@ -42,7 +42,9 @@
 
             @if (session('error'))
                 <div class="alert alert-danger">
-                    {{ session('error') }}
+                    {{ session('error') }}<a class=" text-success" href="{{ route('login') }}">
+                        <i class="ti-user"></i> Login Now
+                    </a>
                 </div>
             @endif
 
