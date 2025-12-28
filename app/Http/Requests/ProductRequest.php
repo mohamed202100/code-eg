@@ -25,7 +25,7 @@ class ProductRequest extends FormRequest
             'category_id' => 'required|exists:categories,id',
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:20',
+            'price'       => 'required|numeric|min:10',
             'status'      => 'required|in:0,1',
             'image'       => $this->isMethod('post') ? 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'stock'       => 'required|integer|min:0',

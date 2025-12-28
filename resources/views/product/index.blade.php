@@ -48,41 +48,48 @@
                 </div>
             @endif
             @if ($products->count())
-                <div class="row">
+                <div class="row row-cols-1 row-cols-md-2 g-4">
                     @foreach ($products as $product)
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
                                 <a href="{{ route('products.show', $product->id) }}">
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
-                                        alt="{{ $product->title }}">
+                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top img-fluid"
+                                        alt="{{ $product->title }}" style="height: 220px; object-fit: cover;">
                                 </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $product->title }}</h5>
-                                    <p class="card-text">${{ $product->price }}</p>
-                                    <p class="card-text"><small>Stock: {{ $product->stock }}</small></p>
-                                    @can('edit products')
-                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info">Edit</a>
-                                    @endcan
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-truncate" title="{{ $product->title }}">
+                                        {{ $product->title }}</h5>
+                                    <p class="card-text mb-1"><strong>${{ $product->price }}</strong></p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                                            <!-- مسافة بين الأزرار -->
+                                            @can('edit products')
+                                                <a href="{{ route('products.edit', $product->id) }}"
+                                                    class="btn btn-sm btn-info flex-grow-1">
+                                                    Edit
+                                                </a>
+                                            @endcan
 
-                                    @can('delete products')
-                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this product?')">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    @endcan
-                                    <br><br>
-                                    @can('view products')
-                                        <a href="{{ route('products.show', $product->id) }}"
-                                            class="btn btn-success d-inline-flex align-items-center gap-2">
-                                            <i class="bi bi-cart-plus"></i>
-                                            Add To Cart
-                                        </a>
-                                    @endcan
+                                            @can('delete products')
+                                                <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                                    class="d-inline flex-grow-1">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger w-100"
+                                                        onclick="return confirm('Are you sure you want to delete this product?')">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            @endcan
+
+                                            @can('view products')
+                                                <a href="{{ route('products.show', $product->id) }}"
+                                                    class="btn btn-sm btn-success d-flex align-items-center justify-content-center flex-grow-1 mt-2">
+                                                    <i class="bi bi-cart-plus me-1"></i> Add To Cart
+                                                </a>
+                                            @endcan
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -92,9 +99,11 @@
                 <p class="text-center">No products in this category.</p>
             @endif
 
-            <div class="d-flex justify-content-center">
+
+            <div class="d-flex justify-content-center mt-4">
                 {{ $products->links() }}
             </div>
+
 
             <!--=================================
  wrapper -->

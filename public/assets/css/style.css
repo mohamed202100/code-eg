@@ -31,3 +31,26 @@
         transform: scale(1.1);
     }
 
+/* pagination buttons */
+.pagination .page-link {
+    border-radius: 50% !important;
+    margin: 0 3px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #0d6efd;
+    border: none;
+    transition: background 0.3s;
+}
+
+.pagination .page-link:hover {
+    background-color: #0b5ed7;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #198754; /* لون مختلف للـ active */
+    border-color: #198754;
+}

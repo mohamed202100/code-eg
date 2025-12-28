@@ -40,32 +40,41 @@
                 <li class="nav-item fullscreen">
                     <a id="btnFullscreen" href="#" class="nav-link"><i class="ti-fullscreen"></i></a>
                 </li>
-                <li class="nav-item dropdown ">
-                    <a class="nav-link top-nav" data-toggle="dropdown" href="#" role="button"
-                        aria-haspopup="true" aria-expanded="false">
-                        <i class="ti-bell"></i>
-                        <span class="badge badge-danger notification-status"> </span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-big dropdown-notifications">
-                        <div class="dropdown-header notifications">
-                            <strong>Notifications</strong>
-                            <span class="badge badge-pill badge-warning">05</span>
+                @auth
+                    <li class="nav-item dropdown">
+                        <a class="nav-link top-nav" data-toggle="dropdown" href="#" role="button"
+                            aria-haspopup="true" aria-expanded="false">
+                            <i class="ti-bell"></i>
+                            <span class="badge badge-danger notification-status">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right dropdown-big dropdown-notifications">
+                            <div class="dropdown-header notifications">
+                                <strong>Notifications</strong>
+                                <span class="badge badge-pill badge-warning">
+                                    {{ auth()->user()->unreadNotifications->count() }}
+                                </span>
+                            </div>
+                            <div class="dropdown-divider"></div>
+
+                            @forelse(auth()->user()->unreadNotifications as $notification)
+                                <a href="{{ route('orders.show', $notification->data['order_id'] ?? '#') }}"
+                                    class="dropdown-item">
+                                    {{ $notification->data['message'] ?? 'New Notification' }}
+                                    <small class="float-right text-muted time">
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </small>
+                                </a>
+                            @empty
+                                <a href="#" class="dropdown-item text-center text-muted">
+                                    No new notifications
+                                </a>
+                            @endforelse
                         </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">New registered user <small
-                                class="float-right text-muted time">Just now</small> </a>
-                        <a href="#" class="dropdown-item">New invoice received <small
-                                class="float-right text-muted time">22 mins</small> </a>
-                        <a href="#" class="dropdown-item">Server error report<small
-                                class="float-right text-muted time">7 hrs</small> </a>
-                        <a href="#" class="dropdown-item">Database report<small
-                                class="float-right text-muted time">1
-                                days</small> </a>
-                        <a href="#" class="dropdown-item">Order confirmation<small
-                                class="float-right text-muted time">2
-                                days</small> </a>
-                    </div>
-                </li>
+                    </li>
+                @endauth
+
 
                 <li class="nav-item dropdown mr-30">
                     <a class="nav-link nav-pill user-avatar" data-toggle="dropdown" href="#" role="button"

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\User;
+use App\Notifications\NewOrderNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -98,6 +100,12 @@ class OrderController extends Controller
 
 
         $cart->cartItems()->delete();
+
+        $admins = User::where('is_admin', true)->get();
+
+        foreach ($admins as $admin) {
+            $admin->notify(new NewOrderNotification($order));
+        }
 
         return redirect()->route('orders.show', $order->id)
             ->with('success', 'Order placed successfully!');
