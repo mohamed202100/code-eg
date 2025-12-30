@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Notifications\OrderStatusChanged;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
@@ -53,6 +54,15 @@ class AdminOrderController extends Controller
 
 
         return back()->with('success', 'Order status updated successfully');
+    }
+
+    public function invoice($id)
+    {
+        $order = Order::with('orderItems.product')->findOrFail($id);
+
+        $pdf = Pdf::loadView('admin.order.invoice', compact('order'));
+
+        return $pdf->download('invoice-order-' . $order->id . '.pdf');
     }
 
     /**

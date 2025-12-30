@@ -158,6 +158,10 @@
                     </div>
                 </div>
             @endforeach
+            <a href="{{ route('admin.orders.invoice', $order->id) }}" class="btn btn-sm btn-primary">
+                Download Invoice
+            </a>
+
 
             {{-- Back --}}
             <div class="text-center mt-4">

@@ -81,7 +81,11 @@ Route::resource('orders', OrderController::class)->middleware('auth');
 
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::resource('orders', AdminOrderController::class);
+    Route::resource('orders', AdminOrderController::class)->only('index', 'show', 'update');
+    Route::get(
+        '/orders/{order}/invoice',
+        [AdminOrderController::class, 'invoice']
+    )->name('orders.invoice');
 });
 
 
