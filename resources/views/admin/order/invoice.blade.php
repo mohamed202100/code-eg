@@ -61,7 +61,7 @@
         </tbody>
     </table>
 
-    <h3>Total: {{ $order->total_price }} EGP</h3>
+    <h3>Total: {{ number_format($order->total_price, 2) }} EGP</h3>
 
 </body>
 
