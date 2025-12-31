@@ -33,11 +33,8 @@ Route::middleware(['permission:delete categories', 'admin'])->group(function () 
 });
 
 
-
 Route::get('/products/search', [ProductController::class, 'search'])
     ->name('products.search');
-
-
 
 
 Route::middleware(['admin', 'permission:create products'])->group(function () {
