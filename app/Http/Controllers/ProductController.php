@@ -18,7 +18,7 @@ class ProductController extends Controller
         if (auth()->check() && auth()->user()->role === 'admin') {
             $products = Product::paginate(4);
         } else {
-            $products = Product::where('status', '1')
+            $products = Product::where('status', Product::STATUS_ACTIVE)
                 ->orderBy('created_at', 'desc')
                 ->paginate(4);
         }
@@ -56,7 +56,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        return view('product.show', compact('product'));
+        if ($product->status) {
+            return view('product.show', compact('product'));
+        } else
+            abort(403, 'Product not available');
     }
 
     /**

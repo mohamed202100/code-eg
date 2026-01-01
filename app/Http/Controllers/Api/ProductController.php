@@ -15,14 +15,14 @@ class ProductController extends Controller
         if (auth()->check() && auth()->user()->role === 'admin') {
             $products = Product::orderBy('created_at', 'desc')->paginate(10);
         } else {
-            $products = Product::where('status', '=', '1')->latest()->paginate(10);
+            $products = Product::where('status',  1)->latest()->paginate(10);
         }
         return ProductResource::collection($products);
     }
 
     public function show(Product $product)
     {
-        if ($product->status != '1') {
+        if ($product->status != 1) {
             return response()->json(['message' => 'Product not available'], 403);
         }
 
@@ -39,7 +39,7 @@ class ProductController extends Controller
 
         $product = Product::create($data);
 
-        return new ProductResource($product);
+        return "product created successfully";
     }
 
     public function update(ProductRequest $request, Product $product)
@@ -52,7 +52,7 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        return new ProductResource($product);
+        return "product updated successfully";
     }
 
     public function toggleStatus(Product $product)
@@ -70,6 +70,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return response()->json(['success' => true]);
+        return "product deleted successfully";
     }
 }

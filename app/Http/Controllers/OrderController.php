@@ -94,7 +94,7 @@ class OrderController extends Controller
         }
 
         if ($item->product->stock == 0) {
-            $item->product->status = '0';
+            $item->product->status = 0;
             $item->product->save();
         }
 
