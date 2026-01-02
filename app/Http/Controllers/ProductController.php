@@ -130,29 +130,52 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        // Handle multiple images
-        if ($request->hasFile('images')) {
-            $primaryIndex = (int) $request->input('primary_image_index', 0);
-            $existingImagesCount = $product->images()->count();
-            
-            // First, update all existing images to not be primary
+        // Handle setting primary image from existing images
+        $primaryImageId = $request->input('existing_primary_image');
+        if ($primaryImageId) {
+            // Reset all images to not primary
             $product->images()->update(['is_primary' => false]);
-            
+            // Set the selected image as primary
+            $primaryImage = $product->images()->find($primaryImageId);
+            if ($primaryImage) {
+                $primaryImage->update(['is_primary' => true]);
+                $product->update(['image' => $primaryImage->image_path]);
+            }
+        }
+
+        // Handle multiple images (adding new ones)
+        if ($request->hasFile('images')) {
+            $primaryIndex = (int) $request->input('primary_image_index', -1); // -1 means no new image is primary
+            $existingImagesCount = $product->images()->count();
+
+            // If no existing primary was set and we have new images, the first new image becomes primary by default
+            if (!$primaryImageId && $primaryIndex === -1 && count($request->file('images')) > 0) {
+                $primaryIndex = $existingImagesCount; // First new image
+            }
+
             foreach ($request->file('images') as $index => $image) {
                 $imagePath = $image->store('products', 'public');
-                
+
                 $isPrimary = ($existingImagesCount + $index) == $primaryIndex;
-                
+
                 $product->images()->create([
                     'image_path' => $imagePath,
                     'order' => $existingImagesCount + $index,
                     'is_primary' => $isPrimary,
                 ]);
-                
+
                 // Update product main image if this is primary
                 if ($isPrimary) {
                     $product->update(['image' => $imagePath]);
                 }
+            }
+        } elseif (!$primaryImageId && $product->images()->count() > 0) {
+            // If no primary image was set and we have existing images, make sure one is primary
+            $primaryImage = $product->images()->where('is_primary', true)->first();
+            if (!$primaryImage) {
+                $firstImage = $product->images()->first();
+                $firstImage->update(['is_primary' => true]);
+                $product->update(['image' => $firstImage->image_path]);
             }
         }
 

@@ -30,7 +30,8 @@ class ProductRequest extends FormRequest
             'image'       => $this->isMethod('post') ? 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048' : 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'images'      => 'nullable|array',
             'images.*'    => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048',
-            'primary_image_index' => 'nullable|integer|min:0',
+            'primary_image_index' => 'nullable|integer|min:-1',
+            'existing_primary_image' => 'nullable|exists:product_images,id',
             'stock'       => 'required|integer|min:0',
         ];
     }

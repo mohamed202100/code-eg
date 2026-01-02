@@ -34,6 +34,16 @@
         <!-- main-content -->
         <div class="content-wrapper">
 
+            <!-- Delete Image Forms (outside main form to prevent conflicts) -->
+            @if ($product->images->count() > 0)
+                @foreach ($product->images as $productImage)
+                    <form id="delete-form-{{ $productImage->id }}" action="{{ route('products.image.delete', $productImage->id) }}" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                @endforeach
+            @endif
+
             <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -111,25 +121,39 @@
                     </div>
 
                     <!-- Current Images -->
-                    @if($product->images->count() > 0)
+                    @if ($product->images->count() > 0)
                         <div class="mb-3">
                             <label class="form-label">Current Product Images</label>
+                            <div class="mb-3">
+                                <label class="form-label">Set Primary Image</label>
+                                <select name="existing_primary_image" id="existing_primary_image" class="form-select">
+                                    <option value="">Keep current primary or auto-select</option>
+                                    @foreach ($product->images as $productImage)
+                                        <option value="{{ $productImage->id }}"
+                                            {{ $productImage->is_primary ? 'selected' : '' }}>
+                                            Image {{ $productImage->order + 1 }}
+                                            {{ $productImage->is_primary ? '(Current Primary)' : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="text-muted">Select which existing image should be the primary image.</small>
+                            </div>
                             <div class="row g-2">
-                                @foreach($product->images as $index => $productImage)
+                                @foreach ($product->images as $index => $productImage)
                                     <div class="col-md-3 position-relative">
-                                        <img src="{{ asset('storage/' . $productImage->image_path) }}" 
-                                             alt="Product Image {{ $index + 1 }}"
-                                             class="img-thumbnail w-100" 
-                                             style="height: 150px; object-fit: cover;">
-                                        @if($productImage->is_primary)
-                                            <span class="badge bg-primary position-absolute top-0 start-0 m-1">Primary</span>
+                                        <img src="{{ asset('storage/' . $productImage->image_path) }}"
+                                            alt="Product Image {{ $index + 1 }}" class="img-thumbnail w-100"
+                                            style="height: 150px; object-fit: cover;">
+                                        @if ($productImage->is_primary)
+                                            <span
+                                                class="badge bg-primary position-absolute top-0 start-0 m-1">Primary</span>
                                         @endif
                                         <div class="text-center mt-1">
-                                            <a href="{{ route('products.image.delete', $productImage->id) }}" 
-                                               class="btn btn-sm btn-danger"
-                                               onclick="return confirm('Are you sure you want to delete this image?')">
+                                            <small class="d-block text-muted">Image {{ $productImage->order + 1 }}</small>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                onclick="deleteImage({{ $productImage->id }})">
                                                 <i class="ti-trash"></i> Delete
-                                            </a>
+                                            </button>
                                         </div>
                                     </div>
                                 @endforeach
@@ -153,7 +177,8 @@
                     <!-- Add More Images -->
                     <div class="mb-3">
                         <label for="images" class="form-label">Add More Images</label>
-                        <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                        <input type="file" class="form-control" id="images" name="images[]" multiple
+                            accept="image/*">
                         <small class="text-muted">You can select multiple images to add to this product.</small>
                         @error('images')
                             <div class="text-danger">{{ $message }}</div>
@@ -167,9 +192,10 @@
                     <div class="mb-3" id="primary-image-selector" style="display: none;">
                         <label for="primary_image_index" class="form-label">Select Primary Image (from new images)</label>
                         <select name="primary_image_index" id="primary_image_index" class="form-select">
-                            <option value="0">First New Image</option>
+                            <option value="-1">Don't set any new image as primary</option>
+                            <!-- Options will be populated by JavaScript -->
                         </select>
-                        <small class="text-muted">The primary image will be used as the main product image.</small>
+                        <small class="text-muted">Select which new image should be the primary image. Leave as "Don't set" to keep current primary or auto-select.</small>
                     </div>
 
                     <!-- Image Preview -->
@@ -208,26 +234,35 @@
     @include('layouts.footer-scripts')
 
     <script>
+        // Function to delete image
+        function deleteImage(imageId) {
+            if (confirm('Are you sure you want to delete this image?')) {
+                document.getElementById('delete-form-' + imageId).submit();
+            }
+        }
+
         // Handle multiple image selection and preview
         document.getElementById('images').addEventListener('change', function(e) {
             const files = e.target.files;
             const previewContainer = document.getElementById('image-preview-container');
             const primarySelector = document.getElementById('primary_image_index');
-            
+            const existingImagesCount = {{ $product->images->count() }};
+
             previewContainer.innerHTML = '';
-            primarySelector.innerHTML = '';
-            
+            // Clear existing options except the first one
+            primarySelector.innerHTML = '<option value="-1">Don\'t set any new image as primary</option>';
+
             if (files.length > 0) {
                 document.getElementById('primary-image-selector').style.display = 'block';
-                
+
                 Array.from(files).forEach((file, index) => {
-                    // Add option to primary selector
+                    // Add option to primary selector (accounting for existing images)
+                    const globalIndex = existingImagesCount + index;
                     const option = document.createElement('option');
-                    option.value = index;
-                    option.textContent = `New Image ${index + 1}`;
-                    if (index === 0) option.selected = true;
+                    option.value = globalIndex;
+                    option.textContent = `New Image ${index + 1} (Position ${globalIndex + 1})`;
                     primarySelector.appendChild(option);
-                    
+
                     // Create preview
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -243,6 +278,24 @@
                 });
             } else {
                 document.getElementById('primary-image-selector').style.display = 'none';
+            }
+        });
+
+        // Handle existing primary image selection
+        document.getElementById('existing_primary_image').addEventListener('change', function(e) {
+            const selectedValue = e.target.value;
+            if (selectedValue) {
+                // If an existing image is selected as primary, disable the new image primary selector
+                document.getElementById('primary_image_index').value = '-1';
+            }
+        });
+
+        // Handle new image primary selection
+        document.getElementById('primary_image_index').addEventListener('change', function(e) {
+            const selectedValue = e.target.value;
+            if (selectedValue !== '-1') {
+                // If a new image is selected as primary, clear existing primary selection
+                document.getElementById('existing_primary_image').value = '';
             }
         });
     </script>
