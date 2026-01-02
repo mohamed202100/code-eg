@@ -16,9 +16,11 @@ class ProductController extends Controller
     public function index()
     {
         if (auth()->check() && auth()->user()->role === 'admin') {
-            $products = Product::paginate(4);
+            $products = Product::with('category')
+                ->paginate(4);
         } else {
-            $products = Product::where('status', Product::STATUS_ACTIVE)
+            $products = Product::with('category')
+                ->where('status', Product::STATUS_ACTIVE)
                 ->orderBy('created_at', 'desc')
                 ->paginate(4);
         }
@@ -30,7 +32,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = Category::all();
+        $categories = \Illuminate\Support\Facades\Cache::remember('categories_list', 3600, function () {
+            return Category::all();
+        });
         return view('product.create', compact('categories'));
     }
 
@@ -56,6 +60,8 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $product->load('category');
+        
         if ($product->status) {
             return view('product.show', compact('product'));
         } else
@@ -67,7 +73,10 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        $categories = Category::all();
+        $product->load('category');
+        $categories = \Illuminate\Support\Facades\Cache::remember('categories_list', 3600, function () {
+            return Category::all();
+        });
 
         return view('product.edit', compact('product', 'categories'));
     }
@@ -102,8 +111,10 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $query = $request->query('query');
-        $products = Product::where('title', 'LIKE', "%{$query}%")
+        $products = Product::with('category')
+            ->where('title', 'LIKE', "%{$query}%")
             ->orWhere('description', 'LIKE', "%{$query}%")
+            ->where('status', Product::STATUS_ACTIVE)
             ->paginate(5);
 
         return view('product.search', compact('products'));

@@ -41,7 +41,9 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $products = $category->products()
-            ->where('status', '1')->paginate(5);
+            ->where('status', 1)
+            ->with('category')
+            ->paginate(5);
         return view('category.show', compact('category', 'products'));
     }
 

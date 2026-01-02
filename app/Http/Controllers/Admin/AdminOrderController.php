@@ -15,7 +15,9 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::latest()->paginate(10);
+        $orders = Order::with(['orderItems.product', 'user'])
+            ->latest()
+            ->paginate(10);
 
         return view('admin.order.index', compact('orders'));
     }
@@ -50,7 +52,10 @@ class AdminOrderController extends Controller
             'status' => $request->status,
         ]);
 
-        $order->user->notify(new OrderStatusChanged($order));
+        // Only notify if order has a user (not a guest order)
+        if ($order->user) {
+            $order->user->notify(new OrderStatusChanged($order));
+        }
 
 
         return back()->with('success', 'Order status updated successfully');
