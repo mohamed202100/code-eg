@@ -7,29 +7,60 @@ use App\Http\Requests\ProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class ProductController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(): JsonResponse
     {
         if (auth()->check() && auth()->user()->role === 'admin') {
-            $products = Product::orderBy('created_at', 'desc')->paginate(10);
+            $products = Product::with('category')->orderBy('created_at', 'desc')->paginate(10);
         } else {
-            $products = Product::where('status',  1)->latest()->paginate(10);
+            $products = Product::with('category')
+                ->where('status', Product::STATUS_ACTIVE)
+                ->latest()
+                ->paginate(10);
         }
-        return ProductResource::collection($products);
+
+        return response()->json([
+            'success' => true,
+            'data' => ProductResource::collection($products),
+            'meta' => [
+                'current_page' => $products->currentPage(),
+                'last_page' => $products->lastPage(),
+                'per_page' => $products->perPage(),
+                'total' => $products->total(),
+            ],
+        ]);
     }
 
-    public function show(Product $product)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Product $product): JsonResponse
     {
-        if ($product->status != 1) {
-            return response()->json(['message' => 'Product not available'], 403);
+        if ($product->status != Product::STATUS_ACTIVE && (!auth()->check() || auth()->user()->role !== 'admin')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Product not available',
+            ], 403);
         }
 
-        return new ProductResource($product);
+        $product->load('category');
+
+        return response()->json([
+            'success' => true,
+            'data' => new ProductResource($product),
+        ]);
     }
 
-    public function store(ProductRequest $request)
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(ProductRequest $request): JsonResponse
     {
         $data = $request->validated();
 
@@ -38,11 +69,19 @@ class ProductController extends Controller
         }
 
         $product = Product::create($data);
+        $product->load('category');
 
-        return "product created successfully";
+        return response()->json([
+            'success' => true,
+            'message' => 'Product created successfully',
+            'data' => new ProductResource($product),
+        ], 201);
     }
 
-    public function update(ProductRequest $request, Product $product)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(ProductRequest $request, Product $product): JsonResponse
     {
         $data = $request->validated();
 
@@ -51,25 +90,42 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+        $product->load('category');
 
-        return "product updated successfully";
+        return response()->json([
+            'success' => true,
+            'message' => 'Product updated successfully',
+            'data' => new ProductResource($product),
+        ]);
     }
 
-    public function toggleStatus(Product $product)
+    /**
+     * Toggle product status.
+     */
+    public function toggleStatus(Product $product): JsonResponse
     {
         $product->status = !$product->status;
         $product->save();
 
         return response()->json([
             'success' => true,
-            'status'  => $product->status
+            'message' => 'Product status updated',
+            'data' => [
+                'status' => $product->status,
+            ],
         ]);
     }
 
-    public function destroy(Product $product)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Product $product): JsonResponse
     {
         $product->delete();
 
-        return "product deleted successfully";
+        return response()->json([
+            'success' => true,
+            'message' => 'Product deleted successfully',
+        ]);
     }
 }
