@@ -5,7 +5,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\OrderController;
-use App\Http\Controllers\OrderItemController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +56,10 @@ Route::middleware(['permission:edit products', 'admin'])->group(function () {
 Route::delete('/products/{product}', [ProductController::class, 'destroy'])
     ->middleware(['permission:delete products', 'admin'])
     ->name('products.destroy');
+
+Route::delete('/products/image/{productImage}', [ProductController::class, 'deleteImage'])
+    ->middleware(['permission:edit products', 'admin'])
+    ->name('products.image.delete');
 
 
 Route::resource('carts', CartController::class)->except('store');

@@ -52,9 +52,40 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <!-- صورة المنتج -->
-                        <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid"
-                            alt="{{ $product->title }}">
+                        <!-- Product Images Gallery -->
+                        @if($product->images->count() > 0)
+                            <!-- Main Image -->
+                            <div class="mb-3">
+                                <img id="main-product-image" 
+                                     src="{{ asset('storage/' . ($product->images->where('is_primary', true)->first()?->image_path ?? $product->images->first()->image_path)) }}" 
+                                     class="img-fluid rounded border" 
+                                     alt="{{ $product->title }}"
+                                     style="max-height: 500px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                            </div>
+                            
+                            <!-- Thumbnail Gallery -->
+                            @if($product->images->count() > 1)
+                                <div class="row g-2">
+                                    @foreach($product->images as $productImage)
+                                        <div class="col-3 col-md-2">
+                                            <img src="{{ asset('storage/' . $productImage->image_path) }}" 
+                                                 class="img-thumbnail product-thumbnail {{ $loop->first ? 'active' : '' }}"
+                                                 alt="{{ $product->title }} - Image {{ $loop->iteration }}"
+                                                 onclick="changeMainImage('{{ asset('storage/' . $productImage->image_path) }}', this)"
+                                                 style="cursor: pointer; height: 80px; width: 100%; object-fit: cover;">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        @elseif($product->image)
+                            <!-- Fallback to old single image -->
+                            <img src="{{ asset('storage/' . $product->image) }}" 
+                                 class="img-fluid rounded border" 
+                                 alt="{{ $product->title }}"
+                                 style="max-height: 500px; width: 100%; object-fit: contain; background-color: #f8f9fa;">
+                        @else
+                            <div class="alert alert-info">No image available</div>
+                        @endif
                     </div>
 
                     <div class="col-md-6">
@@ -151,7 +182,28 @@
                                 document.getElementById('order_quantity').value = quantity;
                                 document.getElementById('orderNowForm').submit();
                             }
+
+                            function changeMainImage(imageSrc, thumbnail) {
+                                document.getElementById('main-product-image').src = imageSrc;
+                                
+                                // Update active thumbnail
+                                document.querySelectorAll('.product-thumbnail').forEach(function(thumb) {
+                                    thumb.classList.remove('active');
+                                    thumb.style.border = '2px solid transparent';
+                                });
+                                thumbnail.classList.add('active');
+                                thumbnail.style.border = '2px solid #007bff';
+                            }
                         </script>
+                        
+                        <style>
+                            .product-thumbnail.active {
+                                border: 2px solid #007bff !important;
+                            }
+                            .product-thumbnail:hover {
+                                opacity: 0.8;
+                            }
+                        </style>
                     </div>
                 </div>
 

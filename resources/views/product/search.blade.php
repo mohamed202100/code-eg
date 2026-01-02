@@ -50,46 +50,13 @@
             @if ($products->count())
                 <div class="row">
                     @foreach ($products as $product)
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100">
-                                <a href="{{ route('products.show', $product->id) }}">
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
-                                        alt="{{ $product->title }}">
-                                </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $product->title }}</h5>
-                                    <p class="card-text">${{ $product->price }}</p>
-                                    <p class="card-text"><small>Stock: {{ $product->stock }}</small></p>
-                                    @can('edit products')
-                                        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-info">Edit</a>
-                                    @endcan
-
-                                    @can('delete products')
-                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                            class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger"
-                                                onclick="return confirm('Are you sure you want to delete this product?')">
-                                                Delete
-                                            </button>
-                                        </form>
-                                    @endcan
-                                    <br><br>
-                                    @can('view products')
-                                        <a href="{{ route('products.show', $product->id) }}"
-                                            class="btn btn-success d-inline-flex align-items-center gap-2">
-                                            <i class="bi bi-cart-plus"></i>
-                                            Add To Cart
-                                        </a>
-                                    @endcan
-                                </div>
-                            </div>
-                        </div>
+                        <x-product-card :product="$product" />
                     @endforeach
                 </div>
             @else
-                <p class="text-center">No products</p>
+                <div class="alert alert-info text-center">
+                    <i class="ti-info-alt"></i> No products found matching your search.
+                </div>
             @endif
 
             <div class="d-flex justify-content-center">

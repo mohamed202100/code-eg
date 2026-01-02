@@ -55,35 +55,19 @@
             @if ($products->count())
                 <div class="row">
                     @foreach ($products as $product)
-                        <div class="col-md-4 mb-3">
-                            <div class="card">
-                                <a href="{{ route('products.show', $product->id) }}">
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top"
-                                        alt="{{ $product->title }}">
-                                </a>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $product->title }}</h5>
-                                    <p class="card-text">${{ $product->price }}</p>
-                                    @can('view products')
-                                        <a href="{{ route('products.show', $product->id) }}"
-                                            class="btn btn-success d-inline-flex align-items-center gap-2">
-                                            <i class="bi bi-cart-plus"></i>
-                                            Add To Cart
-                                        </a>
-                                    @endcan
-                                </div>
-                            </div>
-                        </div>
+                        <x-product-card :product="$product" />
                     @endforeach
                 </div>
 
                 @if (method_exists($products, 'links'))
-                    <div class="d-flex justify-content-center">
+                    <div class="d-flex justify-content-center mt-4">
                         {{ $products->links() }}
                     </div>
                 @endif
             @else
-                <p>No products found in this category.</p>
+                <div class="alert alert-info text-center">
+                    <i class="ti-info-alt"></i> No products found in this category.
+                </div>
             @endif
 
 

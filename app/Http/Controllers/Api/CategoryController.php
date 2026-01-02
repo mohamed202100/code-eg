@@ -15,16 +15,10 @@ class CategoryController extends Controller
      */
     public function index(): JsonResponse
     {
-        $categories = Category::withCount('products')->latest()->paginate(10);
+        $categories = Category::withCount('products')->latest()->get();
         return response()->json([
             'success' => true,
             'data' => CategoryResource::collection($categories),
-            'meta' => [
-                'current_page' => $categories->currentPage(),
-                'last_page' => $categories->lastPage(),
-                'per_page' => $categories->perPage(),
-                'total' => $categories->total(),
-            ],
         ]);
     }
 

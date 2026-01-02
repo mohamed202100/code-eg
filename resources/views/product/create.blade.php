@@ -107,14 +107,40 @@
                         @enderror
                     </div>
 
-                    <!-- Image -->
+                    <!-- Single Image (Optional - for backward compatibility) -->
                     <div class="mb-3">
-                        <label for="image" class="form-label">Product Image</label>
-                        <input type="file" class="form-control" id="image" name="image">
+                        <label for="image" class="form-label">Product Image (Optional)</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <small class="text-muted">Or use multiple images below</small>
                         @error('image')
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    <!-- Multiple Images -->
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Product Images (Multiple)</label>
+                        <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                        <small class="text-muted">You can select multiple images at once. The first image will be set as primary.</small>
+                        @error('images')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                        @error('images.*')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Primary Image Selection -->
+                    <div class="mb-3" id="primary-image-selector" style="display: none;">
+                        <label for="primary_image_index" class="form-label">Select Primary Image</label>
+                        <select name="primary_image_index" id="primary_image_index" class="form-select">
+                            <option value="0">First Image</option>
+                        </select>
+                        <small class="text-muted">The primary image will be used as the main product image.</small>
+                    </div>
+
+                    <!-- Image Preview -->
+                    <div class="mb-3" id="image-preview-container"></div>
 
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </fieldset>
@@ -147,6 +173,46 @@
  footer -->
 
     @include('layouts.footer-scripts')
+
+    <script>
+        // Handle multiple image selection and preview
+        document.getElementById('images').addEventListener('change', function(e) {
+            const files = e.target.files;
+            const previewContainer = document.getElementById('image-preview-container');
+            const primarySelector = document.getElementById('primary_image_index');
+            
+            previewContainer.innerHTML = '';
+            primarySelector.innerHTML = '';
+            
+            if (files.length > 0) {
+                document.getElementById('primary-image-selector').style.display = 'block';
+                
+                Array.from(files).forEach((file, index) => {
+                    // Add option to primary selector
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `Image ${index + 1}`;
+                    if (index === 0) option.selected = true;
+                    primarySelector.appendChild(option);
+                    
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const div = document.createElement('div');
+                        div.className = 'd-inline-block m-2 text-center';
+                        div.innerHTML = `
+                            <img src="${e.target.result}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;" alt="Preview ${index + 1}">
+                            <div class="small mt-1">Image ${index + 1}</div>
+                        `;
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                document.getElementById('primary-image-selector').style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 

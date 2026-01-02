@@ -97,13 +97,15 @@ class CartController extends Controller
     /**
      * Remove the specified cart.
      */
-    public function destroy(Cart $cart): JsonResponse
+    public function destroy(): JsonResponse
     {
-        if ($cart->user_id !== Auth::id()) {
+        $cart = Auth::user()->cart;
+
+        if (!$cart) {
             return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 403);
+                'success' => true,
+                'message' => 'Cart is already empty',
+            ]);
         }
 
         $cart->cartItems()->delete();

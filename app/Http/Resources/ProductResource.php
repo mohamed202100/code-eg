@@ -24,6 +24,17 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'stock' => $this->stock,
             'image' => $this->image ? asset('storage/' . $this->image) : null,
+            'images' => $this->whenLoaded('images', function () {
+                return $this->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_path' => asset('storage/' . $image->image_path),
+                        'is_primary' => $image->is_primary,
+                        'order' => $image->order,
+                    ];
+                });
+            }),
+            'main_image' => $this->main_image ? asset('storage/' . $this->main_image) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
