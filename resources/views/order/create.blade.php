@@ -54,6 +54,13 @@
 
                 <form action="{{ route('orders.store') }}" method="POST">
                     @csrf
+                    @if(isset($isDirectOrder) && $isDirectOrder)
+                        <input type="hidden" name="direct_order" value="1">
+                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                        <input type="hidden" name="size" value="{{ $cart->cartItems->first()->size }}">
+                        <input type="hidden" name="color" value="{{ $cart->cartItems->first()->color }}">
+                        <input type="hidden" name="quantity" value="{{ $cart->cartItems->first()->quantity }}">
+                    @endif
 
                     <!-- الاسم -->
                     <div class="mb-3">
@@ -62,7 +69,11 @@
                             <input type="text" class="form-control" id="name" name="name"
                                 value="{{ Auth::user()->name }}" readonly>
                         @else
+                            @php
+                                $guestName = \App\Helpers\SessionCartHelper::getGuestName();
+                            @endphp
                             <input type="text" class="form-control" id="name" name="name"
+                                value="{{ old('name', $guestName) }}"
                                 placeholder="Enter your name" required>
                         @endif
                         @error('name')

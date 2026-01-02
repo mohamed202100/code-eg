@@ -68,8 +68,8 @@
                                     </h5>
                                     </h5>
                                     <small class="text-muted">
-                                        Size: <strong>{{ $item->size }}</strong> |
-                                        Color: <strong>{{ $item->color }}</strong>
+                                        Size: <strong>{{ $item->size ?? 'N/A' }}</strong> |
+                                        Color: <strong>{{ $item->color ?? 'N/A' }}</strong>
                                     </small>
                                 </div>
                             </div>
@@ -80,14 +80,17 @@
                             </div>
 
                             <!-- Actions -->
-                            <form action="{{ route('cartItems.increment', $item->id) }}" method="POST"
+                            @php
+                                $itemId = isset($isGuest) && $isGuest ? $item->key : $item->id;
+                            @endphp
+                            <form action="{{ route('cartItems.increment', $itemId) }}" method="POST"
                                 class="d-inline">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-success">+</button>
                             </form>
 
-                            <form action="{{ route('cartItems.decrement', $item->id) }}" method="POST"
+                            <form action="{{ route('cartItems.decrement', $itemId) }}" method="POST"
                                 class="d-inline">
                                 @csrf
                                 @method('PATCH')
@@ -95,7 +98,7 @@
                             </form>
 
                             <div class="col-md-2 text-center">
-                                <form action="{{ route('cartItems.destroy', $item->id) }}" method="POST">
+                                <form action="{{ route('cartItems.destroy', $itemId) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-outline-danger btn-sm"

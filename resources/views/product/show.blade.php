@@ -120,16 +120,38 @@
                                     <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
-                            @can('create orders')
+                            <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-success">Add to Cart</button>
-                            @else
-                                <button type="submit" class="btn btn-success" disabled>Add to Cart</button>
-                                <a class=" text-success" href="{{ route('login') }}">
-                                    <i class="ti-user"></i> Login Now For Order
-                                </a>
-                            @endcan
-
+                                <button type="button" class="btn btn-primary" onclick="orderNow()">Order Now</button>
+                            </div>
                         </form>
+
+                        <!-- Direct Order Form (hidden) -->
+                        <form id="orderNowForm" action="{{ route('orders.direct') }}" method="POST" style="display: none;">
+                            @csrf
+                            <input type="hidden" name="product_id" id="order_product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="size" id="order_size">
+                            <input type="hidden" name="color" id="order_color">
+                            <input type="hidden" name="quantity" id="order_quantity">
+                        </form>
+
+                        <script>
+                            function orderNow() {
+                                const size = document.getElementById('size').value;
+                                const color = document.getElementById('color').value;
+                                const quantity = document.getElementById('quantity').value;
+
+                                if (!size || !color) {
+                                    alert('Please select size and color before ordering.');
+                                    return;
+                                }
+
+                                document.getElementById('order_size').value = size;
+                                document.getElementById('order_color').value = color;
+                                document.getElementById('order_quantity').value = quantity;
+                                document.getElementById('orderNowForm').submit();
+                            }
+                        </script>
                     </div>
                 </div>
 
