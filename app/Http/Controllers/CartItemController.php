@@ -28,7 +28,7 @@ class CartItemController extends Controller
         } else {
             // Guest user - $cartItem is the key
             $cart = SessionCartHelper::getCart();
-            
+
             if (!isset($cart[$cartItem])) {
                 return back()->with('error', 'Item not found in cart.');
             }
@@ -61,7 +61,7 @@ class CartItemController extends Controller
         } else {
             // Guest user - $cartItem is the key
             $cart = SessionCartHelper::getCart();
-            
+
             if (!isset($cart[$cartItem])) {
                 return back()->with('error', 'Item not found in cart.');
             }

@@ -41,7 +41,7 @@ class CartController extends Controller
         }
 
         if (!$cart || ($isGuest ? $cart->cartItems->isEmpty() : $cart->cartItems->isEmpty())) {
-            return redirect()->back()->with('error', 'Your cart is empty.');
+            return redirect(route('products.index'))->with('error', 'Your cart is empty.');
         }
 
         return view('cart.index', compact('cart', 'isGuest'));
@@ -94,7 +94,7 @@ class CartController extends Controller
             // Check if item already exists in session cart
             $cart = SessionCartHelper::getCart();
             $key = SessionCartHelper::generateItemKey($product->id, $request->size, $request->color);
-            
+
             if (isset($cart[$key])) {
                 $newQuantity = $cart[$key]['quantity'] + $request->quantity;
                 if ($newQuantity > $product->stock) {
