@@ -72,9 +72,12 @@ Route::patch('/cartItems/{cartItem}/decrement', [CartItemController::class, 'dec
 Route::post('/cart/store/{product}', [CartController::class, 'store'])
     ->name('carts.store');
 
-
-
-Route::resource('orders', OrderController::class)->middleware('auth');
+// Orders - allow guest access for create and store, but require auth for index
+Route::get('/orders', [OrderController::class, 'index'])->middleware('auth')->name('orders.index');
+Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+Route::post('/orders/direct', [OrderController::class, 'directOrder'])->name('orders.direct');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
 
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
