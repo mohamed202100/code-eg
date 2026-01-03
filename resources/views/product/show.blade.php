@@ -80,15 +80,15 @@
                                         <!-- Main Image -->
                                         <div class="product-main-image mb-3 border rounded">
                                             <img id="main-product-image"
-                                                src="{{ asset('storage/' . ($product->images->where('is_primary', true)->first()?->image_path ?? $product->images->first()?->image_path ?? $product->image)) }}"
+                                                src="{{ asset('storage/' . ($product->images->where('is_primary', true)->first()?->image_path ?? ($product->images->first()?->image_path ?? $product->image))) }}"
                                                 class="img-fluid w-100" style="max-height: 500px; object-fit: contain;"
                                                 alt="{{ $product->title }}">
                                         </div>
 
                                         <!-- Thumbnails -->
-                                        @if($product->images->count() > 1)
+                                        @if ($product->images->count() > 1)
                                             <div class="row g-2">
-                                                @foreach($product->images as $productImage)
+                                                @foreach ($product->images as $productImage)
                                                     <div class="col-3">
                                                         <div class="border rounded p-1 cursor-pointer {{ $loop->first ? 'border-primary' : '' }} product-thumbnail-wrapper"
                                                             onclick="changeMainImage('{{ asset('storage/' . $productImage->image_path) }}', this)">
@@ -112,7 +112,7 @@
                                         <div class="mb-3">
                                             <span
                                                 class="badge badge-info text-uppercase">{{ $product->category->title ?? 'Category' }}</span>
-                                            @if($product->stock > 0)
+                                            @if ($product->stock > 0)
                                                 <span class="badge badge-success ml-2">In Stock</span>
                                             @else
                                                 <span class="badge badge-danger ml-2">Out of Stock</span>
@@ -127,31 +127,39 @@
 
                                         <hr>
 
-                                        <form action="{{ route('carts.store', $product) }}" method="POST" class="mt-4">
+                                        <form action="{{ route('carts.store', $product) }}" method="POST"
+                                            class="mt-4">
                                             @csrf
                                             <div class="row">
                                                 <!-- Size Selection -->
                                                 <div class="col-md-6 mb-3">
                                                     <div class="form-group">
                                                         <label class="font-weight-bold">Size</label>
-                                                        <select name="size" id="size" class="custom-select form-control"
-                                                            required>
+                                                        <select name="size" id="size"
+                                                            class="custom-select form-control" required>
                                                             <option value="">Select Size</option>
-                                                            @if (optional($product->category)->title === 'shirts')
-                                                                <option value="S">Small</option>
-                                                                <option value="M">Medium</option>
-                                                                <option value="L">Large</option>
-                                                                <option value="XL">XL</option>
+
+                                                            @if ($product->category->title === 'Hoodie')
+                                                                @foreach (['S' => 'Small', 'M' => 'Medium', 'L' => 'Large', 'XL' => 'XL'] as $value => $label)
+                                                                    <option value="{{ $value }}"
+                                                                        {{ old('size') == $value ? 'selected' : '' }}>
+                                                                        {{ $label }}
+                                                                    </option>
+                                                                @endforeach
                                                             @else
-                                                                <option value="30">30</option>
-                                                                <option value="32">32</option>
-                                                                <option value="34">34</option>
-                                                                <option value="36">36</option>
+                                                                @foreach (['30', '32', '34', '36'] as $size)
+                                                                    <option value="{{ $size }}"
+                                                                        {{ old('size') == $size ? 'selected' : '' }}>
+                                                                        {{ $size }}
+                                                                    </option>
+                                                                @endforeach
                                                             @endif
                                                         </select>
+
                                                         @error('size')
                                                             <div class="text-danger small">{{ $message }}</div>
                                                         @enderror
+
                                                     </div>
                                                 </div>
 
@@ -192,7 +200,8 @@
                                                             class="btn btn-outline-success btn-lg mr-2 flex-grow-1">
                                                             <i class="ti-shopping-cart"></i> Add to Cart
                                                         </button>
-                                                        <button type="button" class="btn btn-primary btn-lg flex-grow-1"
+                                                        <button type="button"
+                                                            class="btn btn-primary btn-lg flex-grow-1"
                                                             onclick="orderNow()">
                                                             Order Now
                                                         </button>
@@ -213,7 +222,8 @@
                                         </form>
 
                                         <div class="mt-4">
-                                            <p class="mb-2"><small><i class="ti-truck mr-1"></i> Free shipping on orders
+                                            <p class="mb-2"><small><i class="ti-truck mr-1"></i> Free shipping on
+                                                    orders
                                                     over $100</small></p>
                                             <p class="mb-0"><small><i class="ti-shield mr-1"></i> 1 year warranty
                                                     included</small></p>
@@ -227,12 +237,14 @@
                                 <div class="col-12">
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="desc-tab" data-toggle="tab" href="#desc"
-                                                role="tab" aria-controls="desc" aria-selected="true">Description</a>
+                                            <a class="nav-link active" id="desc-tab" data-toggle="tab"
+                                                href="#desc" role="tab" aria-controls="desc"
+                                                aria-selected="true">Description</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="reviews-tab" data-toggle="tab" href="#reviews"
-                                                role="tab" aria-controls="reviews" aria-selected="false">Reviews (0)</a>
+                                                role="tab" aria-controls="reviews" aria-selected="false">Reviews
+                                                (0)</a>
                                         </li>
                                     </ul>
                                     <div class="tab-content border-left border-right border-bottom p-4"
@@ -277,7 +289,7 @@
                     document.getElementById('main-product-image').src = imageSrc;
 
                     // Update active border
-                    document.querySelectorAll('.product-thumbnail-wrapper').forEach(function (el) {
+                    document.querySelectorAll('.product-thumbnail-wrapper').forEach(function(el) {
                         el.classList.remove('border-primary');
                     });
                     thumbnailWrapper.classList.add('border-primary');
