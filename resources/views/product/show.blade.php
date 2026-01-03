@@ -139,7 +139,7 @@
                                                             class="custom-select form-control" required>
                                                             <option value="">Select Size</option>
 
-                                                            @if ($product->category->title === 'Hoodie')
+                                                            @if ($product->category->title === 'Hoodie' || $product->category->title === 'shirts')
                                                                 @foreach (['S' => 'Small', 'M' => 'Medium', 'L' => 'Large', 'XL' => 'XL'] as $value => $label)
                                                                     <option value="{{ $value }}"
                                                                         {{ old('size') == $value ? 'selected' : '' }}>

@@ -34,9 +34,9 @@ class ProductController extends Controller
      */
     public function create()
     {
-        $categories = \Illuminate\Support\Facades\Cache::remember('categories_list', 3600, function () {
-            return Category::all();
-        });
+
+        $categories = Category::all();
+
         return view('product.create', compact('categories'));
     }
 
@@ -119,9 +119,9 @@ class ProductController extends Controller
             $product->load('images'); // Refresh
         }
 
-        $categories = \Illuminate\Support\Facades\Cache::remember('categories_list', 3600, function () {
-            return Category::all();
-        });
+
+        $categories = Category::all();
+
 
         return view('product.edit', compact('product', 'categories'));
     }
