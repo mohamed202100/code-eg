@@ -53,27 +53,7 @@
             </div>
             <!-- widgets -->
             <div class="row">
-                <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
-                    <div class="card card-statistics h-100">
-                        <div class="card-body">
-                            <div class="clearfix">
-                                <div class="float-left">
-                                    <span class="text-danger">
-                                        <i class="fa fa-bar-chart-o highlight-icon" aria-hidden="true"></i>
-                                    </span>
-                                </div>
-                                <div class="float-right text-right">
-                                    <p class="card-text text-dark">Visitors</p>
-                                    <h4>65,650</h4>
-                                </div>
-                            </div>
-                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
-                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> 81% lower
-                                growth
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                <!-- Orders -->
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
                     <div class="card card-statistics h-100">
                         <div class="card-body">
@@ -84,27 +64,25 @@
                                     </span>
                                 </div>
                                 <div class="float-right text-right">
-                                    @can('update orders')
-                                        <a href="{{ route('admin.orders.index') }}">
-                                            <p class="card-text text-dark">Orders</p>
+                                    @if(auth()->check() && auth()->user()->role == 'admin')
+                                        <a href="{{ route('admin.orders.index') }}" class="text-dark">
+                                            <p class="card-text">Orders</p>
                                             <h4>{{ \App\Models\Order::count() }}</h4>
                                         </a>
                                     @else
                                         <p class="card-text text-dark">Orders</p>
                                         <h4>{{ \App\Models\Order::count() }}</h4>
-                                    @endcan
+                                    @endif
                                 </div>
-
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
-                                <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total sales
-                                <span class="text-muted mb-0 float-right text-right">
-                                    ${{ \App\Models\Order::sum('total_price') }}
-                                </span>
+                                <i class="fa fa-bookmark-o mr-1" aria-hidden="true"></i> Total orders
                             </p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Revenue -->
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
                     <div class="card card-statistics h-100">
                         <div class="card-body">
@@ -116,227 +94,72 @@
                                 </div>
                                 <div class="float-right text-right">
                                     <p class="card-text text-dark">Revenue</p>
-                                    <h4>$65656</h4>
+                                    <h4>${{ number_format(\App\Models\Order::sum('total_price'), 2) }}</h4>
                                 </div>
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
-                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Sales Per Year
+                                <i class="fa fa-calendar mr-1" aria-hidden="true"></i> Total earnings
                             </p>
                         </div>
                     </div>
                 </div>
+
+                <!-- Products -->
+                <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <div class="clearfix">
+                                <div class="float-left">
+                                    <span class="text-danger">
+                                        <i class="fa fa-cube highlight-icon" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <div class="float-right text-right">
+                                    <p class="card-text text-dark">Products</p>
+                                    <h4>{{ \App\Models\Product::count() }}</h4>
+                                </div>
+                            </div>
+                            <p class="text-muted pt-3 mb-0 mt-2 border-top">
+                                <i class="fa fa-exclamation-circle mr-1" aria-hidden="true"></i> Active products
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories -->
                 <div class="col-xl-3 col-lg-6 col-md-6 mb-30">
                     <div class="card card-statistics h-100">
                         <div class="card-body">
                             <div class="clearfix">
                                 <div class="float-left">
                                     <span class="text-primary">
-                                        <i class="fa fa-twitter highlight-icon" aria-hidden="true"></i>
+                                        <i class="fa fa-tags highlight-icon" aria-hidden="true"></i>
                                     </span>
                                 </div>
                                 <div class="float-right text-right">
-                                    <p class="card-text text-dark">Followers</p>
-                                    <h4>62,500+</h4>
+                                    <p class="card-text text-dark">Categories</p>
+                                    <h4>{{ \App\Models\Category::count() }}</h4>
                                 </div>
                             </div>
                             <p class="text-muted pt-3 mb-0 mt-2 border-top">
-                                <i class="fa fa-repeat mr-1" aria-hidden="true"></i> Just Updated
+                                <i class="fa fa-repeat mr-1" aria-hidden="true"></i> Total categories
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- Orders Status widgets-->
-            <div class="row">
-                <div class="col-xl-4 mb-30">
-                    <div class="card card-statistics h-100">
-                        <!-- action group -->
-                        <div class="btn-group info-drop">
-                            <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false"><i class="ti-more"></i></button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#"><i
-                                        class="text-primary ti-reload"></i>Refresh</a>
-                                <a class="dropdown-item" href="#"><i class="text-secondary ti-eye"></i>View
-                                    all</a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Market summary</h5>
-                            <h4>$50,500 </h4>
-                            <div class="row mt-20">
-                                <div class="col-4">
-                                    <h6>Apple</h6>
-                                    <b class="text-info">+ 82.24 % </b>
-                                </div>
-                                <div class="col-4">
-                                    <h6>Instagram</h6>
-                                    <b class="text-danger">- 12.06 % </b>
-                                </div>
-                                <div class="col-4">
-                                    <h6>Google</h6>
-                                    <b class="text-warning">+ 24.86 % </b>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="sparkline2" class="scrollbar-x text-center"></div>
-                    </div>
-                </div>
-                <div class="col-xl-8 mb-30">
-                    <div class="card h-100">
-                        <div class="btn-group info-drop">
-                            <button type="button" class="dropdown-toggle-split text-muted" data-toggle="dropdown"
-                                aria-haspopup="true" aria-expanded="false"><i class="ti-more"></i></button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#"><i
-                                        class="text-primary ti-reload"></i>Refresh</a>
-                                <a class="dropdown-item" href="#"><i class="text-secondary ti-eye"></i>View
-                                    all</a>
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="d-block d-md-flexx justify-content-between">
-                                <div class="d-block">
-                                    <h5 class="card-title">Site Visits Growth </h5>
-                                </div>
-                                <div class="d-flex">
-                                    <div class="clearfix mr-30">
-                                        <h6 class="text-success">Income</h6>
-                                        <p>+584</p>
-                                    </div>
-                                    <div class="clearfix  mr-50">
-                                        <h6 class="text-danger"> Outcome</h6>
-                                        <p>-255</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="morris-area" style="height: 320px;"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
+            <!-- Location Map -->
             <div class="row">
-                <div class="col-xl-4 mb-30">
+                <div class="col-xl-12 mb-30">
                     <div class="card card-statistics h-100">
                         <div class="card-body">
-                            <h5 class="card-title">Best Selling Items</h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-20">
-                                    <div class="media">
-                                        <div class="position-relative">
-                                            <img class="img-fluid mr-15 avatar-small" src="images/item/01.png"
-                                                alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="mt-0 mb-0">Car dealer <span class="float-right text-danger">
-                                                    8,561</span> </h6>
-                                            <p>Automotive WordPress Theme </p>
-                                        </div>
-                                    </div>
-                                    <div class="divider dotted mt-20"></div>
-                                </li>
-                                <li class="mb-20">
-                                    <div class="media">
-                                        <div class="position-relative clearfix">
-                                            <img class="img-fluid mr-15 avatar-small" src="images/item/02.png"
-                                                alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="mt-0 mb-0">Webster <span class="float-right text-warning">
-                                                    6,213</span> </h6>
-                                            <p>Multi-purpose HTML5 Template </p>
-                                        </div>
-                                    </div>
-                                    <div class="divider dotted mt-20"></div>
-                                </li>
-                                <li class="mb-20">
-                                    <div class="media">
-                                        <div class="position-relative">
-                                            <img class="img-fluid mr-15 avatar-small" src="images/item/03.png"
-                                                alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="mt-0 mb-0">The corps <span class="float-right text-success">
-                                                    2,926</span> </h6>
-                                            <p> Multi-Purpose WordPress Theme </p>
-                                        </div>
-                                    </div>
-                                    <div class="divider dotted mt-20"></div>
-                                </li>
-                                <li>
-                                    <div class="media">
-                                        <div class="position-relative clearfix">
-                                            <img class="img-fluid mr-15 avatar-small" src="images/item/04.png"
-                                                alt="">
-                                        </div>
-                                        <div class="media-body">
-                                            <h6 class="mt-0 mb-0">Sam martin <span
-                                                    class="float-right text-warning">6,213 </span></h6>
-                                            <p>Personal vCard Resume WordPress Theme </p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-xl-4 mb-30">
-                    <div class="card card-statistics h-100">
-                        <div class="p-4 text-center bg" style="background: url(images/bg/01.jpg);">
-                            <h5 class="mb-70 text-white position-relative">Michael Bean </h5>
-                            <div class="btn-group info-drop">
-                                <button type="button" class="dropdown-toggle-split text-white"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i
-                                        class="ti-more"></i></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="#"><i class="text-primary ti-files"></i> Add
-                                        task</a>
-                                    <a class="dropdown-item" href="#"><i class="text-dark ti-pencil-alt"></i>
-                                        Edit Profile</a>
-                                    <a class="dropdown-item" href="#"><i class="text-success ti-user"></i> View
-                                        Profile</a>
-                                    <a class="dropdown-item" href="#"><i class="text-secondary ti-info"></i>
-                                        Contact Info</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-body text-center position-relative">
-                            <div class="avatar-top">
-                                <img class="img-fluid w-25 rounded-circle " src="images/team/13.jpg" alt="">
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-4 mt-30">
-                                    <b>Files Saved</b>
-                                    <h4 class="text-success mt-10">1582</h4>
-                                </div>
-                                <div class="col-sm-4 mt-30">
-                                    <b>Memory Used </b>
-                                    <h4 class="text-danger mt-10">58GB</h4>
-                                </div>
-                                <div class="col-sm-4 mt-30">
-                                    <b>Spent Money</b>
-                                    <h4 class="text-warning mt-10">352,6$</h4>
-                                </div>
-                            </div>
-                            <div class="divider mt-20"></div>
-                            <p class="mt-30">17504 Carlton Cuevas Rd, Gulfport, MS, 39503</p>
-                            <p class="mt-10">michael@webmin.com</p>
-                            <div class="social-icons color-icon mt-20">
-                                <ul>
-                                    <li class="social-rss"><a href="#"><i class="fa fa-rss"></i></a></li>
-                                    <li class="social-facebook"><a href="#"><i class="fa fa-facebook"></i></a>
-                                    </li>
-                                    <li class="social-twitter"><a href="#"><i class="fa fa-twitter"></i></a>
-                                    </li>
-                                    <li class="social-github"><a href="#"><i class="fa fa-github"></i></a></li>
-                                    <li class="social-youtube"><a href="#"><i class="fa fa-youtube"></i></a>
-                                    </li>
-                                    <li class="social-instagram"><a href="#"><i
-                                                class="fa fa-instagram"></i></a>
-                                    </li>
-                                </ul>
+                            <h5 class="card-title">Store Location</h5>
+                            <div class="map-wrapper" style="height: 400px; width: 100%;">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3453.163777934938!2d31.3456783!3d30.0609355!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14583e7b57530269%3A0x629c193568c094a2!2sCairo%20International%20Stadium!5e0!3m2!1sen!2seg!4v1625686457388!5m2!1sen!2seg"
+                                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy">
+                                </iframe>
                             </div>
                         </div>
                     </div>

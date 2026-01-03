@@ -48,27 +48,56 @@
                 </div>
             @endif
 
-            <h2>{{ $category->title }}</h2>
-
-            <h4>Products</h4>
-
-            @if ($products->count())
+            <!-- Page Title -->
+            <div class="page-title">
                 <div class="row">
-                    @foreach ($products as $product)
-                        <x-product-card :product="$product" />
-                    @endforeach
-                </div>
-
-                @if (method_exists($products, 'links'))
-                    <div class="d-flex justify-content-center mt-4">
-                        {{ $products->links() }}
+                    <div class="col-sm-6">
+                        <h4 class="mb-0">Category: {{ $category->title }}</h4>
                     </div>
-                @endif
-            @else
-                <div class="alert alert-info text-center">
-                    <i class="ti-info-alt"></i> No products found in this category.
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb pt-0 pr-0 float-left float-sm-right">
+                            <li class="breadcrumb-item"><a href="/" class="default-color">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('categories.index') }}"
+                                    class="default-color">Category</a></li>
+                            <li class="breadcrumb-item active">{{ $category->title }}</li>
+                        </ol>
+                    </div>
                 </div>
-            @endif
+            </div>
+
+            <div class="row">
+                <div class="col-12 mb-30">
+                    <div class="card card-statistics h-100">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Products in {{ $category->title }}</h5>
+
+                            @if ($products->count())
+                                <div class="row">
+                                    <!-- Product Card component already contains col-md-4 col-lg-3, so we just loop -->
+                                    @foreach ($products as $product)
+                                        <x-product-card :product="$product" />
+                                    @endforeach
+                                </div>
+
+                                @if (method_exists($products, 'links'))
+                                    <div class="d-flex justify-content-center mt-4">
+                                        {{ $products->links() }}
+                                    </div>
+                                @endif
+                            @else
+                                <div class="text-center py-5">
+                                    <i class="ti-package text-muted display-3 mb-3"></i>
+                                    <h5 class="text-muted">No products found in this category.</h5>
+                                    @can('create products')
+                                        <a href="{{ route('products.create') }}" class="btn btn-primary mt-3">Add Product to
+                                            Category</a>
+                                    @endcan
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
             <!--=================================

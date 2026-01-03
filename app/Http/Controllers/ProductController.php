@@ -57,10 +57,10 @@ class ProductController extends Controller
         // Handle multiple images
         if ($request->hasFile('images')) {
             $primaryIndex = $request->input('primary_image_index', 0);
-            
+
             foreach ($request->file('images') as $index => $image) {
                 $imagePath = $image->store('products', 'public');
-                
+
                 $product->images()->create([
                     'image_path' => $imagePath,
                     'order' => $index,
@@ -92,7 +92,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $product->load(['category', 'images']);
-        
+
         if ($product->status) {
             return view('product.show', compact('product'));
         } else
@@ -102,9 +102,23 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(Product $product)
     {
         $product->load(['category', 'images']);
+
+        // Self-heal: If product has legacy image but no images relation, create one
+        if ($product->image && $product->images->count() === 0) {
+            $product->images()->create([
+                'image_path' => $product->image,
+                'order' => 0,
+                'is_primary' => true
+            ]);
+            $product->load('images'); // Refresh
+        }
+
         $categories = \Illuminate\Support\Facades\Cache::remember('categories_list', 3600, function () {
             return Category::all();
         });
@@ -117,15 +131,32 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
+        // Self-heal: Ensure legacy image is migrated before processing update
+        // This handles cases where update is called directly or edit view didn't trigger migration
+        if ($product->image && $product->images()->count() === 0) {
+            $product->images()->create([
+                'image_path' => $product->image,
+                'order' => 0,
+                'is_primary' => true
+            ]);
+        }
+
         $data = $request->validated();
 
-        // Handle single image (backward compatibility)
+        // Handle single image (backward compatibility - legacy field removal if present in request but ignored by new UI)
         if ($request->hasFile('image')) {
             // Delete old image if exists
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
             $data['image'] = $request->file('image')->store('products', 'public');
+
+            // Should also create a product_image for it if we are maintaining sync
+            $product->images()->create([
+                'image_path' => $data['image'],
+                'order' => $product->images()->count(),
+                'is_primary' => $product->images()->count() == 0
+            ]);
         }
 
         $product->update($data);

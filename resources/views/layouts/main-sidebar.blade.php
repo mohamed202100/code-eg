@@ -51,64 +51,37 @@
                             @can('create products')
                                 <li> <a href="{{ route('products.create') }}">Create Product</a> </li>
                             @endcan
-                            <li> <a href="input-group.html">input group</a> </li>
-                        </ul>
-                    </li>
-                    <!-- menu item Charts-->
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#chart">
-                            <div class="pull-left"><i class="ti-pie-chart"></i><span
-                                    class="right-nav-text">Charts</span></div>
-                            <div class="pull-right"><i class="ti-plus"></i></div>
-                            <div class="clearfix"></div>
-                        </a>
-                        <ul id="chart" class="collapse" data-parent="#sidebarnav">
-                            <li> <a href="chart-js.html">Chart.js</a> </li>
-                            <li> <a href="chart-morris.html">Chart morris </a> </li>
-                            <li> <a href="chart-sparkline.html">Chart Sparkline</a> </li>
                         </ul>
                     </li>
 
-                    <!-- menu font icon-->
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#font-icon">
-                            <div class="pull-left"><i class="ti-home"></i><span class="right-nav-text">Cart</span></div>
-                            <div class="pull-right"><i class="ti-plus"></i></div>
-                            <div class="clearfix"></div>
-                        </a>
-                        <ul id="font-icon" class="collapse" data-parent="#sidebarnav">
-                            <li> <a href="fontawesome-icon.html">font Awesome</a> </li>
-                            <li> <a href="themify-icons.html">Themify icons</a> </li>
-                            <li> <a href="weather-icon.html">Weather icons</a> </li>
-                        </ul>
-                    </li>
-                    <!-- menu title -->
-
-                    <!-- menu item Form-->
-                    <li>
-                        <a href="javascript:void(0);" data-toggle="collapse" data-target="#Form">
-                            <div class="pull-left"><i class="ti-files"></i><span class="right-nav-text">Form &
-                                    Editor</span></div>
-                            <div class="pull-right"><i class="ti-plus"></i></div>
-                            <div class="clearfix"></div>
-                        </a>
-                        <ul id="Form" class="collapse" data-parent="#sidebarnav">
-                            <li> <a href="editor.html">Editor</a> </li>
-                            <li> <a href="editor-markdown.html">Editor Markdown</a> </li>
-                            <li> <a href="form-input.html">Form input</a> </li>
-                            <li> <a href="form-validation-jquery.html">form validation jquery</a> </li>
-                            <li> <a href="form-wizard.html">form wizard</a> </li>
-                            <li> <a href="form-repeater.html">form repeater</a> </li>
-                            <li> <a href="input-group.html">input group</a> </li>
-                            <li> <a href="toastr.html">toastr</a> </li>
-                        </ul>
-                    </li>
                     <!-- menu item table -->
                     <li>
                         <a href="{{ route('carts.index') }}">
                             <div class="pull-left">
                                 <i class="ti-layout-tab-window"></i>
                                 <span class="right-nav-text">Cart</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>
+                    </li>
+
+                    <!-- menu item About -->
+                    <li>
+                        <a href="{{ route('about') }}">
+                            <div class="pull-left">
+                                <i class="ti-info-alt"></i>
+                                <span class="right-nav-text">About Us</span>
+                            </div>
+                            <div class="clearfix"></div>
+                        </a>
+                    </li>
+
+                    <!-- menu item Contact -->
+                    <li>
+                        <a href="{{ route('contact') }}">
+                            <div class="pull-left">
+                                <i class="ti-headphone-alt"></i>
+                                <span class="right-nav-text">Contact Us</span>
                             </div>
                             <div class="clearfix"></div>
                         </a>

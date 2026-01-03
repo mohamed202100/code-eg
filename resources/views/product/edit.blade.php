@@ -120,86 +120,66 @@
                         @enderror
                     </div>
 
-                    <!-- Current Images -->
-                    @if ($product->images->count() > 0)
-                        <div class="mb-3">
-                            <label class="form-label">Current Product Images</label>
-                            <div class="mb-3">
-                                <label class="form-label">Set Primary Image</label>
-                                <select name="existing_primary_image" id="existing_primary_image" class="form-select">
-                                    <option value="">Keep current primary or auto-select</option>
-                                    @foreach ($product->images as $productImage)
-                                        <option value="{{ $productImage->id }}"
-                                            {{ $productImage->is_primary ? 'selected' : '' }}>
-                                            Image {{ $productImage->order + 1 }}
-                                            {{ $productImage->is_primary ? '(Current Primary)' : '' }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <small class="text-muted">Select which existing image should be the primary image.</small>
-                            </div>
-                            <div class="row g-2">
-                                @foreach ($product->images as $index => $productImage)
-                                    <div class="col-md-3 position-relative">
-                                        <img src="{{ asset('storage/' . $productImage->image_path) }}"
-                                            alt="Product Image {{ $index + 1 }}" class="img-thumbnail w-100"
-                                            style="height: 150px; object-fit: cover;">
-                                        @if ($productImage->is_primary)
-                                            <span
-                                                class="badge bg-primary position-absolute top-0 start-0 m-1">Primary</span>
-                                        @endif
-                                        <div class="text-center mt-1">
-                                            <small class="d-block text-muted">Image {{ $productImage->order + 1 }}</small>
-                                            <button type="button" class="btn btn-sm btn-danger"
-                                                onclick="deleteImage({{ $productImage->id }})">
-                                                <i class="ti-trash"></i> Delete
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
+                    <!-- Unified Image Management -->
+                    <div class="card mb-4 border">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Product Images</h5>
                         </div>
-                    @endif
+                        <div class="card-body">
+                            <!-- Existing Images -->
+                            @if ($product->images->count() > 0)
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Current Images</label>
+                                    <div class="row g-3">
+                                        @foreach ($product->images as $productImage)
+                                            <div class="col-xl-3 col-lg-4 col-md-6">
+                                                <div class="card h-100 {{ $productImage->is_primary ? 'border-primary' : 'border-secondary' }}" id="card-existing-{{ $productImage->id }}">
+                                                    <div class="position-relative" style="height: 180px; overflow: hidden;">
+                                                        <img src="{{ asset('storage/' . $productImage->image_path) }}"
+                                                            class="w-100 h-100" style="object-fit: cover;">
+                                                        @if ($productImage->is_primary)
+                                                            <span class="badge bg-primary position-absolute top-0 start-0 m-2" id="badge-existing-{{ $productImage->id }}">Main Image</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="card-body text-center p-2">
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input existing-radio" type="radio"
+                                                                name="existing_primary_image"
+                                                                id="existing_primary_{{ $productImage->id }}"
+                                                                value="{{ $productImage->id }}"
+                                                                {{ $productImage->is_primary ? 'checked' : '' }}
+                                                                onchange="handlePrimarySelection('existing', {{ $productImage->id }})">
+                                                            <label class="form-check-label" for="existing_primary_{{ $productImage->id }}">Set as Main</label>
+                                                        </div>
+                                                        <hr class="my-2">
+                                                        <button type="button" class="btn btn-sm btn-outline-danger w-100"
+                                                            onclick="deleteImage({{ $productImage->id }})">
+                                                            <i class="ti-trash"></i> Remove
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
 
-                    <!-- Single Image (Optional - for backward compatibility) -->
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Update Main Image (Optional)</label>
-                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
-                        @if ($product->image && $product->images->count() == 0)
-                            <img src="{{ asset('storage/' . $product->image) }}" alt="Product Image"
-                                class="img-thumbnail mt-2" width="150">
-                        @endif
-                        @error('image')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
+                            <!-- Upload New Images -->
+                            <div class="mb-3">
+                                <label for="images" class="form-label fw-bold">Upload New Images</label>
+                                <div class="input-group">
+                                    <input type="file" class="form-control" id="images" name="images[]" multiple accept="image/*">
+                                </div>
+                                <small class="text-muted">You can select multiple files. Creating previews...</small>
+                            </div>
+
+                            <!-- New Images Preview Grid -->
+                            <div id="image-preview-container" class="row g-3"></div>
+
+                            <!-- Hidden input for new image primary selection -->
+                            <input type="hidden" name="primary_image_index" id="primary_image_index" value="-1">
+                        </div>
                     </div>
-
-                    <!-- Add More Images -->
-                    <div class="mb-3">
-                        <label for="images" class="form-label">Add More Images</label>
-                        <input type="file" class="form-control" id="images" name="images[]" multiple
-                            accept="image/*">
-                        <small class="text-muted">You can select multiple images to add to this product.</small>
-                        @error('images')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                        @error('images.*')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <!-- Primary Image Selection (for new images) -->
-                    <div class="mb-3" id="primary-image-selector" style="display: none;">
-                        <label for="primary_image_index" class="form-label">Select Primary Image (from new images)</label>
-                        <select name="primary_image_index" id="primary_image_index" class="form-select">
-                            <option value="-1">Don't set any new image as primary</option>
-                            <!-- Options will be populated by JavaScript -->
-                        </select>
-                        <small class="text-muted">Select which new image should be the primary image. Leave as "Don't set" to keep current primary or auto-select.</small>
-                    </div>
-
-                    <!-- Image Preview -->
-                    <div class="mb-3" id="image-preview-container"></div>
 
                     <button type="submit" class="btn btn-primary">Update</button>
                 </fieldset>
@@ -241,61 +221,66 @@
             }
         }
 
+        // Function to handle primary image selection (mutual exclusion)
+        function handlePrimarySelection(type, value) {
+            if (type === 'existing') {
+                // If existing image selected, reset new image selection
+                document.getElementById('primary_image_index').value = '-1';
+                // Uncheck all new radios dummy inputs
+                document.querySelectorAll('.new-radio').forEach(el => el.checked = false);
+            } else if (type === 'new') {
+                // If new image selected, update hidden input
+                document.getElementById('primary_image_index').value = value;
+                // Uncheck all existing radios
+                document.querySelectorAll('.existing-radio').forEach(el => el.checked = false);
+            }
+            updateVisuals();
+        }
+
+        function updateVisuals() {
+            // Visual feedback loop can be added here if needed (e.g. bold borders)
+            // For now the radio buttons provide enough feedback
+        }
+
         // Handle multiple image selection and preview
         document.getElementById('images').addEventListener('change', function(e) {
             const files = e.target.files;
             const previewContainer = document.getElementById('image-preview-container');
-            const primarySelector = document.getElementById('primary_image_index');
             const existingImagesCount = {{ $product->images->count() }};
 
             previewContainer.innerHTML = '';
-            // Clear existing options except the first one
-            primarySelector.innerHTML = '<option value="-1">Don\'t set any new image as primary</option>';
 
             if (files.length > 0) {
-                document.getElementById('primary-image-selector').style.display = 'block';
-
                 Array.from(files).forEach((file, index) => {
-                    // Add option to primary selector (accounting for existing images)
+                    // Global index logic matches Controller expectation: existingCount + index
                     const globalIndex = existingImagesCount + index;
-                    const option = document.createElement('option');
-                    option.value = globalIndex;
-                    option.textContent = `New Image ${index + 1} (Position ${globalIndex + 1})`;
-                    primarySelector.appendChild(option);
 
-                    // Create preview
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         const div = document.createElement('div');
-                        div.className = 'd-inline-block m-2 text-center';
+                        div.className = 'col-xl-3 col-lg-4 col-md-6';
                         div.innerHTML = `
-                            <img src="${e.target.result}" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;" alt="Preview ${index + 1}">
-                            <div class="small mt-1">New Image ${index + 1}</div>
+                            <div class="card h-100 border-secondary">
+                                <div class="position-relative" style="height: 180px; overflow: hidden;">
+                                    <img src="${e.target.result}" class="w-100 h-100" style="object-fit: cover;">
+                                </div>
+                                <div class="card-body text-center p-2">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input new-radio" type="radio"
+                                            name="new_primary_selection_dummy"
+                                            id="new_primary_${globalIndex}"
+                                            value="${globalIndex}"
+                                            onchange="handlePrimarySelection('new', ${globalIndex})">
+                                        <label class="form-check-label" for="new_primary_${globalIndex}">Set as Main</label>
+                                    </div>
+                                    <div class="small mt-1 text-muted">New Image ${index + 1}</div>
+                                </div>
+                            </div>
                         `;
                         previewContainer.appendChild(div);
                     };
                     reader.readAsDataURL(file);
                 });
-            } else {
-                document.getElementById('primary-image-selector').style.display = 'none';
-            }
-        });
-
-        // Handle existing primary image selection
-        document.getElementById('existing_primary_image').addEventListener('change', function(e) {
-            const selectedValue = e.target.value;
-            if (selectedValue) {
-                // If an existing image is selected as primary, disable the new image primary selector
-                document.getElementById('primary_image_index').value = '-1';
-            }
-        });
-
-        // Handle new image primary selection
-        document.getElementById('primary_image_index').addEventListener('change', function(e) {
-            const selectedValue = e.target.value;
-            if (selectedValue !== '-1') {
-                // If a new image is selected as primary, clear existing primary selection
-                document.getElementById('existing_primary_image').value = '';
             }
         });
     </script>
